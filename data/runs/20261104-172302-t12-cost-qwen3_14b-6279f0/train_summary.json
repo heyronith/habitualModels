@@ -1,0 +1,19 @@
+{
+  "c_crit": null,
+  "checkpoints": [
+    {
+      "meta": {
+        "tag": "schedule"
+      },
+      "path": "/vol/runs/20261104-172302-t12-cost-qwen3_14b-6279f0/checkpoints/update_10/adapter_or_weights.pt",
+      "sha256": "cf8e9bcfe47218284dd641aa2a0fcf8021c80f59a29d3c46ae9e3f95cb4b39b3",
+      "update": 10
+    }
+  ],
+  "elapsed_sec": 134.7965636253357,
+  "ended_utc": "2026-11-04T17:25:56Z",
+  "final_update": 10,
+  "mean_sec_per_update": 11.983674263954162,
+  "n_updates": 10,
+  "status": "no_criterion"
+}

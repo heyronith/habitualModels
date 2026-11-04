@@ -1,0 +1,12 @@
+{"c_crit": null, "kind": "eval", "mean_p_dock_a": 0.6739663801168058, "streak": 0, "update": 0}
+{"kind": "train", "loss": -0.005468749441206455, "mean_reward": 0.8968750238418579, "sec": 12.084161520004272, "update": 1}
+{"kind": "train", "loss": 0.00615234300494194, "mean_reward": 0.903124988079071, "sec": 11.95126485824585, "update": 2}
+{"kind": "train", "loss": 0.0, "mean_reward": 0.8999999761581421, "sec": 11.938902378082275, "update": 3}
+{"kind": "train", "loss": 0.01025390438735485, "mean_reward": 0.8812499642372131, "sec": 12.002098083496094, "update": 4}
+{"kind": "train", "loss": 0.0, "mean_reward": 0.875, "sec": 12.044251203536987, "update": 5}
+{"kind": "train", "loss": 0.007031249813735485, "mean_reward": 0.890625, "sec": 11.968497037887573, "update": 6}
+{"kind": "train", "loss": 0.00820312462747097, "mean_reward": 0.925000011920929, "sec": 11.938957452774048, "update": 7}
+{"kind": "train", "loss": 0.014355466701090336, "mean_reward": 0.8843749761581421, "sec": 12.053119897842407, "update": 8}
+{"kind": "train", "loss": 0.01230468600988388, "mean_reward": 0.9781249761581421, "sec": 11.925252676010132, "update": 9}
+{"kind": "train", "loss": 0.0, "mean_reward": 0.9750000238418579, "sec": 11.930237531661987, "update": 10}
+{"c_crit": null, "kind": "eval", "mean_p_dock_a": 0.8017377241243411, "streak": 0, "update": 10}

@@ -1,0 +1,105 @@
+{
+  "eligible": [
+    [
+      "qwen3_8b",
+      0.6519089144333222,
+      "R"
+    ],
+    [
+      "qwen3_14b",
+      0.7627736931038467,
+      "R"
+    ]
+  ],
+  "phase": "p5",
+  "smokes": [
+    {
+      "gpu": "L40S",
+      "gpu_name": "NVIDIA L40S",
+      "gpu_seconds": 173.17329502105713,
+      "max_updates": 10,
+      "model_key": "qwen3_8b",
+      "model_revision": "b968826d9c46dd6066d109eabc6255188de91218",
+      "peak_gpu_mem_gb": 20.75940465927124,
+      "projected_16_runs_usd": 97.91032886535645,
+      "projected_one_run_usd": 6.119395554084778,
+      "run_id": "20261104-171952-t12-cost-qwen3_8b-6b5d3b",
+      "seconds_per_update": 17.317329502105714,
+      "spend": {
+        "cost_usd": 0.09385992590141295,
+        "gpu": "L40S",
+        "gpu_seconds": 173.17329502105713,
+        "note": "T1.2 P5 cost smoke qwen3_8b",
+        "run_id": "20261104-171952-t12-cost-qwen3_8b-6b5d3b",
+        "ts": "2026-11-04T17:23:02Z",
+        "usd_per_second": 0.000542
+      },
+      "summary": {
+        "c_crit": null,
+        "checkpoints": [
+          {
+            "meta": {
+              "tag": "schedule"
+            },
+            "path": "/vol/runs/20261104-171952-t12-cost-qwen3_8b-6b5d3b/checkpoints/update_10/adapter_or_weights.pt",
+            "sha256": "215de0e208aefd4563e5c3d26c113b635099663ead5c0aed4f0046575ce7f632",
+            "update": 10
+          }
+        ],
+        "elapsed_sec": 98.58772873878479,
+        "ended_utc": "2026-11-04T17:22:55Z",
+        "final_update": 10,
+        "mean_sec_per_update": 8.876470184326172,
+        "n_updates": 10,
+        "status": "no_criterion"
+      },
+      "trainable_mode": "last_mlp",
+      "usd_per_update": 0.009385992590141296,
+      "variant": "R"
+    },
+    {
+      "gpu": "L40S",
+      "gpu_name": "NVIDIA L40S",
+      "gpu_seconds": 173.69578790664673,
+      "max_updates": 10,
+      "model_key": "qwen3_14b",
+      "model_revision": "40c069824f4251a91eefaf281ebe4c544efd3e18",
+      "peak_gpu_mem_gb": 36.84799575805664,
+      "projected_16_runs_usd": 98.18219236358641,
+      "projected_one_run_usd": 6.136387022724151,
+      "run_id": "20261104-172302-t12-cost-qwen3_14b-6279f0",
+      "seconds_per_update": 17.369578790664672,
+      "spend": {
+        "cost_usd": 0.09414311704540251,
+        "gpu": "L40S",
+        "gpu_seconds": 173.69578790664673,
+        "note": "T1.2 P5 cost smoke qwen3_14b",
+        "run_id": "20261104-172302-t12-cost-qwen3_14b-6279f0",
+        "ts": "2026-11-04T17:26:04Z",
+        "usd_per_second": 0.000542
+      },
+      "summary": {
+        "c_crit": null,
+        "checkpoints": [
+          {
+            "meta": {
+              "tag": "schedule"
+            },
+            "path": "/vol/runs/20261104-172302-t12-cost-qwen3_14b-6279f0/checkpoints/update_10/adapter_or_weights.pt",
+            "sha256": "cf8e9bcfe47218284dd641aa2a0fcf8021c80f59a29d3c46ae9e3f95cb4b39b3",
+            "update": 10
+          }
+        ],
+        "elapsed_sec": 134.7965636253357,
+        "ended_utc": "2026-11-04T17:25:56Z",
+        "final_update": 10,
+        "mean_sec_per_update": 11.983674263954162,
+        "n_updates": 10,
+        "status": "no_criterion"
+      },
+      "trainable_mode": "last_mlp",
+      "usd_per_update": 0.00941431170454025,
+      "variant": "R"
+    }
+  ]
+}

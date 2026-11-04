@@ -1,0 +1,11 @@
+{
+  "M1": "quor",
+  "M2": "glim",
+  "cell": 0,
+  "dock_a": 2,
+  "dock_b": 8,
+  "reward_a": 1.0,
+  "reward_b": 0.6,
+  "run_index": 0,
+  "seed": 5000
+}

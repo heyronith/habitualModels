@@ -1,0 +1,12 @@
+{
+  "checkpoints": [
+    {
+      "meta": {
+        "tag": "schedule"
+      },
+      "path": "/vol/runs/20261104-172302-t12-cost-qwen3_14b-6279f0/checkpoints/update_10/adapter_or_weights.pt",
+      "sha256": "cf8e9bcfe47218284dd641aa2a0fcf8021c80f59a29d3c46ae9e3f95cb4b39b3",
+      "update": 10
+    }
+  ]
+}
