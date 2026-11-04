@@ -1,3 +1,6 @@
 {"cost_usd": 0.007132340051651001, "gpu": "L4", "gpu_seconds": 32.127657890319824, "note": "template check Qwen3-1.7B (prior)", "run_id": "template-check-qwen3-1.7b", "ts": "2026-11-04T05:21:20Z", "usd_per_second": 0.000222}
 {"cost_usd": 0.0247049583735466, "gpu": "L4", "gpu_seconds": 111.28359627723694, "note": "baseline qwen3_1_7b", "run_id": "20261104-052122-baseline-qwen3_1_7b-c8b657", "ts": "2026-11-04T05:24:55Z", "usd_per_second": 0.000222}
 {"cost_usd": 0.03959904516506195, "gpu": "L4", "gpu_seconds": 178.37407732009888, "note": "baseline qwen3_4b", "run_id": "20261104-052455-baseline-qwen3_4b-8d2456", "ts": "2026-11-04T05:28:02Z", "usd_per_second": 0.000222}
+{"cost_usd": 0.2816570329041481, "gpu": "A10G", "gpu_seconds": 920.4478199481964, "note": "smoke rl+battery lora", "run_id": "20261104-053934-smoke-rl-lora-152c89", "ts": "2026-11-04T05:55:28Z", "usd_per_second": 0.000306}
+{"cost_usd": 0.08145995899486543, "gpu": "A10G", "gpu_seconds": 266.2090163230896, "note": "smoke rl+battery last_mlp", "run_id": "20261104-055528-smoke-rl-last_mlp-ef7229", "ts": "2026-11-04T06:00:06Z", "usd_per_second": 0.000306}
+{"cost_usd": 0.16229720891475677, "gpu": "L4", "gpu_seconds": 731.0685086250305, "note": "smoke sft clone", "run_id": "20261104-060006-smoke-sft-lora-31ace7", "ts": "2026-11-04T06:12:36Z", "usd_per_second": 0.000222}

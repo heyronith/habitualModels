@@ -1,0 +1,30 @@
+{
+  "gpu": "A10G",
+  "gpu_name": "NVIDIA A10G",
+  "gpu_seconds": 212.67610883712769,
+  "model_key": "qwen3_1_7b",
+  "model_revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+  "peak_gpu_mem_gb": 4.741513252258301,
+  "run_id": "20261104-055528-smoke-rl-last_mlp-ef7229",
+  "summary": {
+    "c_crit": 30,
+    "checkpoints": [
+      {
+        "meta": {
+          "tag": "schedule"
+        },
+        "path": "/vol/runs/20261104-055528-smoke-rl-last_mlp-ef7229/checkpoints/update_30/adapter_or_weights.pt",
+        "sha256": "1ca17a0869f1e2e1893b5c467f81d46e2e1c7e37f0dc8a9da91385085dad8eba",
+        "update": 30
+      }
+    ],
+    "elapsed_sec": 211.69355249404907,
+    "ended_utc": "2026-11-04T05:59:01Z",
+    "final_update": 30,
+    "mean_sec_per_update": 6.754335498809814,
+    "n_updates": 30,
+    "status": "completed_max_updates"
+  },
+  "trainable_mode": "last_mlp",
+  "volume_path": "/vol/runs/20261104-055528-smoke-rl-last_mlp-ef7229"
+}

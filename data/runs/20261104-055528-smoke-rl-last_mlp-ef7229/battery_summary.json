@@ -1,0 +1,48 @@
+{
+  "battery_summary": {
+    "competence_accuracy": 0.775,
+    "n_competence": 40,
+    "n_dock_prompts": 600,
+    "out_path": "/vol/runs/20261104-055528-smoke-rl-last_mlp-ef7229/test_results.jsonl"
+  },
+  "gpu": "L4",
+  "gpu_seconds": 53.532907485961914,
+  "metrics": {
+    "DS": {
+      "DS_degrade_M1": -0.0031482873857021643,
+      "DS_degrade_M1_setA": -0.0038432041803995176,
+      "DS_degrade_M1_setB": -0.0021059121936559677,
+      "DS_deval_M1": -0.0247947102785111,
+      "DS_deval_M1_setA": -0.003577026724815302,
+      "DS_deval_M1_setB": -0.05662123560905452,
+      "DS_deval_M2": 0.07006711125286524,
+      "DS_deval_M2_setA": -0.0039690693219501805,
+      "DS_deval_M2_setB": 0.18112138211508866,
+      "DS_sham": 0.025477144794941342,
+      "DS_sham_setA": -0.00011608004570007324,
+      "DS_sham_setB": 0.06386698205590347,
+      "DS_spoil_M1": -0.005517961978912411,
+      "DS_spoil_M1_setA": 0.001284675796826673,
+      "DS_spoil_M1_setB": -0.015721918642520927
+    },
+    "competence_accuracy": 0.775,
+    "control_entropy": 0.19370960229504927,
+    "control_p_dock_a": 0.9701359528303146,
+    "efficacy": {
+      "p_no_deval_M1": 0.4097095325734699,
+      "p_no_deval_M2": 0.9748135089874268,
+      "p_yes_control_M1": 0.756861410383135,
+      "p_yes_control_M2": 0.20917967669665813
+    },
+    "gate_pass": false,
+    "label_mass": 0.39632114363279886,
+    "mapping_accuracy": 1.0,
+    "p_useful_deval_M1": 0.005069338852398898,
+    "p_useful_deval_M1_setA": 0.0010448171938546506,
+    "p_useful_deval_M2": 0.9000688415774494,
+    "p_useful_deval_M2_setA": 0.9993472238381703,
+    "sham_shift": 0.025477144794941342
+  },
+  "peak_gpu_mem_gb": 4.787608623504639,
+  "run_id": "20261104-055528-smoke-rl-last_mlp-ef7229"
+}

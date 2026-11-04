@@ -1,0 +1,12 @@
+{
+  "checkpoints": [
+    {
+      "meta": {
+        "tag": "schedule"
+      },
+      "path": "/vol/runs/20261104-053934-smoke-rl-lora-152c89/checkpoints/update_30/adapter_or_weights.pt",
+      "sha256": "865d1180b479276ede9a96db2fc7bcfafd65ae11d43be0277ad4226b78e3968c",
+      "update": 30
+    }
+  ]
+}

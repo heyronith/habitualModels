@@ -1,0 +1,12 @@
+{
+  "checkpoints": [
+    {
+      "meta": {
+        "tag": "clone"
+      },
+      "path": "/vol/runs/20261104-060006-smoke-sft-lora-31ace7/checkpoints/update_30/adapter_or_weights.pt",
+      "sha256": "e6f63af61ac5a50667034423dda967de381d33a93ba93be2789dad418312af87",
+      "update": 30
+    }
+  ]
+}

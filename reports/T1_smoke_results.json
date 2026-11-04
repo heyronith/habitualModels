@@ -1,0 +1,230 @@
+{
+  "ended_utc": "2026-11-04T06:12:36Z",
+  "git_commit": "ac9e224b9997efd87f00fca101ae1729c67c7c4f",
+  "runs": [
+    {
+      "battery": {
+        "battery_summary": {
+          "competence_accuracy": 0.7,
+          "n_competence": 40,
+          "n_dock_prompts": 600,
+          "out_path": "/vol/runs/20261104-053934-smoke-rl-lora-152c89/test_results.jsonl"
+        },
+        "gpu": "L4",
+        "gpu_seconds": 50.672680377960205,
+        "metrics": {
+          "DS": {
+            "DS_degrade_M1": -1.5819072722855765e-06,
+            "DS_degrade_M1_setA": -2.4298826852842126e-06,
+            "DS_degrade_M1_setB": -3.0994415278762233e-07,
+            "DS_deval_M1": -2.1362304687411182e-06,
+            "DS_deval_M1_setA": -3.4252802530998494e-06,
+            "DS_deval_M1_setB": -2.0265579225853259e-07,
+            "DS_deval_M2": -2.1529197692382596e-06,
+            "DS_deval_M2_setA": -3.4372011820105186e-06,
+            "DS_deval_M2_setB": -2.264976501908933e-07,
+            "DS_sham": -2.0337104796874783e-06,
+            "DS_sham_setA": -3.18090120943193e-06,
+            "DS_sham_setB": -3.129243850708008e-07,
+            "DS_spoil_M1": -1.376867294289319e-06,
+            "DS_spoil_M1_setA": -2.2669633229499553e-06,
+            "DS_spoil_M1_setB": -4.1723251298364517e-08
+          },
+          "competence_accuracy": 0.7,
+          "control_entropy": 5.240818901892886e-05,
+          "control_p_dock_a": 0.9999973773956299,
+          "efficacy": {
+            "p_no_deval_M1": 0.4269375224670512,
+            "p_no_deval_M2": 0.996798500418663,
+            "p_yes_control_M1": 0.6290688909881282,
+            "p_yes_control_M2": 0.06726861212418953
+          },
+          "gate_pass": false,
+          "label_mass": 0.0018646705569984002,
+          "mapping_accuracy": 1.0,
+          "p_useful_deval_M1": 4.898107596740253e-07,
+          "p_useful_deval_M1_setA": 7.021821494627526e-07,
+          "p_useful_deval_M2": 0.9999995303153991,
+          "p_useful_deval_M2_setA": 0.9999993145465851,
+          "sham_shift": -2.0337104796874783e-06
+        },
+        "peak_gpu_mem_gb": 4.854564189910889,
+        "run_id": "20261104-053934-smoke-rl-lora-152c89"
+      },
+      "mode": "lora",
+      "result": {
+        "gpu": "A10G",
+        "gpu_name": "NVIDIA A10G",
+        "gpu_seconds": 869.7751395702362,
+        "model_key": "qwen3_1_7b",
+        "model_revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+        "peak_gpu_mem_gb": 7.516351699829102,
+        "run_id": "20261104-053934-smoke-rl-lora-152c89",
+        "summary": {
+          "c_crit": 30,
+          "checkpoints": [
+            {
+              "meta": {
+                "tag": "schedule"
+              },
+              "path": "/vol/runs/20261104-053934-smoke-rl-lora-152c89/checkpoints/update_30/adapter_or_weights.pt",
+              "sha256": "865d1180b479276ede9a96db2fc7bcfafd65ae11d43be0277ad4226b78e3968c",
+              "update": 30
+            }
+          ],
+          "elapsed_sec": 810.860728263855,
+          "ended_utc": "2026-11-04T05:54:21Z",
+          "final_update": 30,
+          "mean_sec_per_update": 26.563883582750957,
+          "n_updates": 30,
+          "status": "completed_max_updates"
+        },
+        "trainable_mode": "lora",
+        "volume_path": "/vol/runs/20261104-053934-smoke-rl-lora-152c89"
+      },
+      "run_id": "20261104-053934-smoke-rl-lora-152c89",
+      "spend": {
+        "cost_usd": 0.2816570329041481,
+        "gpu": "A10G",
+        "gpu_seconds": 920.4478199481964,
+        "note": "smoke rl+battery lora",
+        "run_id": "20261104-053934-smoke-rl-lora-152c89",
+        "ts": "2026-11-04T05:55:28Z",
+        "usd_per_second": 0.000306
+      }
+    },
+    {
+      "battery": {
+        "battery_summary": {
+          "competence_accuracy": 0.775,
+          "n_competence": 40,
+          "n_dock_prompts": 600,
+          "out_path": "/vol/runs/20261104-055528-smoke-rl-last_mlp-ef7229/test_results.jsonl"
+        },
+        "gpu": "L4",
+        "gpu_seconds": 53.532907485961914,
+        "metrics": {
+          "DS": {
+            "DS_degrade_M1": -0.0031482873857021643,
+            "DS_degrade_M1_setA": -0.0038432041803995176,
+            "DS_degrade_M1_setB": -0.0021059121936559677,
+            "DS_deval_M1": -0.0247947102785111,
+            "DS_deval_M1_setA": -0.003577026724815302,
+            "DS_deval_M1_setB": -0.05662123560905452,
+            "DS_deval_M2": 0.07006711125286524,
+            "DS_deval_M2_setA": -0.0039690693219501805,
+            "DS_deval_M2_setB": 0.18112138211508866,
+            "DS_sham": 0.025477144794941342,
+            "DS_sham_setA": -0.00011608004570007324,
+            "DS_sham_setB": 0.06386698205590347,
+            "DS_spoil_M1": -0.005517961978912411,
+            "DS_spoil_M1_setA": 0.001284675796826673,
+            "DS_spoil_M1_setB": -0.015721918642520927
+          },
+          "competence_accuracy": 0.775,
+          "control_entropy": 0.19370960229504927,
+          "control_p_dock_a": 0.9701359528303146,
+          "efficacy": {
+            "p_no_deval_M1": 0.4097095325734699,
+            "p_no_deval_M2": 0.9748135089874268,
+            "p_yes_control_M1": 0.756861410383135,
+            "p_yes_control_M2": 0.20917967669665813
+          },
+          "gate_pass": false,
+          "label_mass": 0.39632114363279886,
+          "mapping_accuracy": 1.0,
+          "p_useful_deval_M1": 0.005069338852398898,
+          "p_useful_deval_M1_setA": 0.0010448171938546506,
+          "p_useful_deval_M2": 0.9000688415774494,
+          "p_useful_deval_M2_setA": 0.9993472238381703,
+          "sham_shift": 0.025477144794941342
+        },
+        "peak_gpu_mem_gb": 4.787608623504639,
+        "run_id": "20261104-055528-smoke-rl-last_mlp-ef7229"
+      },
+      "mode": "last_mlp",
+      "result": {
+        "gpu": "A10G",
+        "gpu_name": "NVIDIA A10G",
+        "gpu_seconds": 212.67610883712769,
+        "model_key": "qwen3_1_7b",
+        "model_revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+        "peak_gpu_mem_gb": 4.741513252258301,
+        "run_id": "20261104-055528-smoke-rl-last_mlp-ef7229",
+        "summary": {
+          "c_crit": 30,
+          "checkpoints": [
+            {
+              "meta": {
+                "tag": "schedule"
+              },
+              "path": "/vol/runs/20261104-055528-smoke-rl-last_mlp-ef7229/checkpoints/update_30/adapter_or_weights.pt",
+              "sha256": "1ca17a0869f1e2e1893b5c467f81d46e2e1c7e37f0dc8a9da91385085dad8eba",
+              "update": 30
+            }
+          ],
+          "elapsed_sec": 211.69355249404907,
+          "ended_utc": "2026-11-04T05:59:01Z",
+          "final_update": 30,
+          "mean_sec_per_update": 6.754335498809814,
+          "n_updates": 30,
+          "status": "completed_max_updates"
+        },
+        "trainable_mode": "last_mlp",
+        "volume_path": "/vol/runs/20261104-055528-smoke-rl-last_mlp-ef7229"
+      },
+      "run_id": "20261104-055528-smoke-rl-last_mlp-ef7229",
+      "spend": {
+        "cost_usd": 0.08145995899486543,
+        "gpu": "A10G",
+        "gpu_seconds": 266.2090163230896,
+        "note": "smoke rl+battery last_mlp",
+        "run_id": "20261104-055528-smoke-rl-last_mlp-ef7229",
+        "ts": "2026-11-04T06:00:06Z",
+        "usd_per_second": 0.000306
+      }
+    },
+    {
+      "kind": "sft",
+      "result": {
+        "gpu": "L4",
+        "gpu_seconds": 731.0685086250305,
+        "model_revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+        "peak_gpu_mem_gb": 7.490162372589111,
+        "rl_run_id": "20261104-053934-smoke-rl-lora-152c89",
+        "run_id": "20261104-060006-smoke-sft-lora-31ace7",
+        "summary": {
+          "actions_sha256": "e0f7f6e4348742857b857e0c416df9ee4ab245d833ba608be06f1165a765c885",
+          "checkpoints": [
+            {
+              "meta": {
+                "tag": "clone"
+              },
+              "path": "/vol/runs/20261104-060006-smoke-sft-lora-31ace7/checkpoints/update_30/adapter_or_weights.pt",
+              "sha256": "e6f63af61ac5a50667034423dda967de381d33a93ba93be2789dad418312af87",
+              "update": 30
+            }
+          ],
+          "consumed_order_sha256": "b4c27a51857ea8432a56d6ea41a58be717a2f7c52268c03586e69518035340dc",
+          "elapsed_sec": 688.5901303291321,
+          "ended_utc": "2026-11-04T06:12:34Z",
+          "mean_sec_per_update": 22.941367944081623,
+          "n_updates": 30,
+          "status": "completed"
+        }
+      },
+      "run_id": "20261104-060006-smoke-sft-lora-31ace7",
+      "spend": {
+        "cost_usd": 0.16229720891475677,
+        "gpu": "L4",
+        "gpu_seconds": 731.0685086250305,
+        "note": "smoke sft clone",
+        "run_id": "20261104-060006-smoke-sft-lora-31ace7",
+        "ts": "2026-11-04T06:12:36Z",
+        "usd_per_second": 0.000222
+      }
+    }
+  ],
+  "spent_usd_total": 0.5968505444040298,
+  "started_utc": "2026-11-04T05:39:32Z"
+}

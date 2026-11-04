@@ -1,0 +1,19 @@
+{
+  "c_crit": 30,
+  "checkpoints": [
+    {
+      "meta": {
+        "tag": "schedule"
+      },
+      "path": "/vol/runs/20261104-055528-smoke-rl-last_mlp-ef7229/checkpoints/update_30/adapter_or_weights.pt",
+      "sha256": "1ca17a0869f1e2e1893b5c467f81d46e2e1c7e37f0dc8a9da91385085dad8eba",
+      "update": 30
+    }
+  ],
+  "elapsed_sec": 211.69355249404907,
+  "ended_utc": "2026-11-04T05:59:01Z",
+  "final_update": 30,
+  "mean_sec_per_update": 6.754335498809814,
+  "n_updates": 30,
+  "status": "completed_max_updates"
+}

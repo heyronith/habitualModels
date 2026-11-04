@@ -1,0 +1,19 @@
+{
+  "c_crit": 30,
+  "checkpoints": [
+    {
+      "meta": {
+        "tag": "schedule"
+      },
+      "path": "/vol/runs/20261104-053934-smoke-rl-lora-152c89/checkpoints/update_30/adapter_or_weights.pt",
+      "sha256": "865d1180b479276ede9a96db2fc7bcfafd65ae11d43be0277ad4226b78e3968c",
+      "update": 30
+    }
+  ],
+  "elapsed_sec": 810.860728263855,
+  "ended_utc": "2026-11-04T05:54:21Z",
+  "final_update": 30,
+  "mean_sec_per_update": 26.563883582750957,
+  "n_updates": 30,
+  "status": "completed_max_updates"
+}

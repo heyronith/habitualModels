@@ -1,0 +1,27 @@
+{
+  "gpu": "L4",
+  "gpu_seconds": 731.0685086250305,
+  "model_revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+  "peak_gpu_mem_gb": 7.490162372589111,
+  "rl_run_id": "20261104-053934-smoke-rl-lora-152c89",
+  "run_id": "20261104-060006-smoke-sft-lora-31ace7",
+  "summary": {
+    "actions_sha256": "e0f7f6e4348742857b857e0c416df9ee4ab245d833ba608be06f1165a765c885",
+    "checkpoints": [
+      {
+        "meta": {
+          "tag": "clone"
+        },
+        "path": "/vol/runs/20261104-060006-smoke-sft-lora-31ace7/checkpoints/update_30/adapter_or_weights.pt",
+        "sha256": "e6f63af61ac5a50667034423dda967de381d33a93ba93be2789dad418312af87",
+        "update": 30
+      }
+    ],
+    "consumed_order_sha256": "b4c27a51857ea8432a56d6ea41a58be717a2f7c52268c03586e69518035340dc",
+    "elapsed_sec": 688.5901303291321,
+    "ended_utc": "2026-11-04T06:12:34Z",
+    "mean_sec_per_update": 22.941367944081623,
+    "n_updates": 30,
+    "status": "completed"
+  }
+}
