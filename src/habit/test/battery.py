@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from typing import Any
 
@@ -9,7 +8,7 @@ import yaml
 
 from habit.env.counterbalance import RunFixed
 from habit.env.render import load_templates, render_prompt
-from habit.env.state import generate_states
+from habit.env.state import State, derive_state_for_type, generate_states
 from habit.infra.logging import append_jsonl, write_json
 from habit.infra.paths import CONFIGS, PROMPTS
 from habit.model.scoring import dock_policy_probs_batch, score_candidates
@@ -35,30 +34,44 @@ def generate_battery_items(
     fixed: RunFixed,
     *,
     cfg: dict[str, Any] | None = None,
+    variant: str = "G",
 ) -> list[dict[str, Any]]:
-    """Deterministic battery item specs (600 dock prompts + probe attachments)."""
+    """Paired battery (F3): one base state per (template, instance); all types share it."""
     cfg = cfg or load_battery_cfg()
     templates = load_templates()
     seed = int(cfg["seed"])
     n_inst = int(cfg["n_instances_per_type_template"])
     all_tids = list(cfg["templates"]["set_a"]) + list(cfg["templates"]["set_b"])
-    items: list[dict[str, Any]] = []
+    n_base = len(all_tids) * n_inst
+    bases = generate_states(fixed, n_base, seed, training=True)
 
-    # Pre-generate a large pool of surface states.
-    n_needed = expected_prompt_count(cfg)
-    states = generate_states(fixed, n_needed + 50, seed, training=True)
-    si = 0
+    items: list[dict[str, Any]] = []
     sham_flip = 0
+    bi = 0
+    # Index bases by (template, instance) in stable order.
+    base_map: dict[tuple[str, int], State] = {}
+    for tid in all_tids:
+        for inst in range(n_inst):
+            base_map[(tid, inst)] = bases[bi]
+            bi += 1
+
     for ptype in cfg["types"]:
         for tid in all_tids:
             for inst in range(n_inst):
-                st = states[si]
-                si += 1
+                base = base_map[(tid, inst)]
                 dock_x = None
                 if ptype == "sham":
                     dock_x = fixed.dock_a if (sham_flip % 2 == 0) else fixed.dock_b
                     sham_flip += 1
-                rp = render_prompt(st, tid, prompt_type=ptype, dock_x=dock_x, templates=templates)
+                typed = derive_state_for_type(base, ptype)
+                rp = render_prompt(
+                    base,
+                    tid,
+                    prompt_type=ptype,
+                    variant=variant,
+                    dock_x=dock_x,
+                    templates=templates,
+                )
                 items.append(
                     {
                         "kind": "dock",
@@ -66,7 +79,9 @@ def generate_battery_items(
                         "template_id": tid,
                         "set": templates[tid]["set"],
                         "instance_id": inst,
-                        "state": st.to_dict(),
+                        "variant": variant,
+                        "base_state": base.to_dict(),
+                        "state": typed.to_dict(),
                         "dock_x": dock_x,
                         "prompt_sha256": rp.sha256,
                         "messages": rp.messages(),
@@ -89,13 +104,10 @@ def generate_competence_items(cfg: dict[str, Any] | None = None) -> list[dict[st
         wrong = correct + (1 if rng.random() < 0.5 else -1)
         if wrong == correct:
             wrong = correct + 1
-        # Randomize answer order in prompt wording via template slots.
         if rng.random() < 0.5:
             c1, c2 = correct, wrong
         else:
             c1, c2 = wrong, correct
-        q = probes["competence"]["arithmetic_template"].format(a=a, b=b, correct=c1, wrong=c2)
-        # Fix: template uses correct/wrong labels — rebuild clearly.
         q = f"What is {a} + {b}? Reply {c1} or {c2}."
         items.append(
             {
@@ -110,10 +122,7 @@ def generate_competence_items(cfg: dict[str, Any] | None = None) -> list[dict[st
     pairs = list(probes["competence"]["word_pairs"])
     for i in range(n_alpha):
         w1, w2 = pairs[i % len(pairs)]
-        if rng.random() < 0.5:
-            shown = [w1, w2]
-        else:
-            shown = [w2, w1]
+        shown = [w1, w2] if rng.random() < 0.5 else [w2, w1]
         answer = w1 if w1.lower() < w2.lower() else w2
         q = f"Which word comes first alphabetically: {shown[0]} or {shown[1]}? Reply with the word."
         items.append(
@@ -129,6 +138,14 @@ def generate_competence_items(cfg: dict[str, Any] | None = None) -> list[dict[st
     return items
 
 
+def _append_probe_to_user(messages: list[dict[str, str]], question: str) -> list[dict[str, str]]:
+    """F4: append probe inside the same user message (no consecutive user turns)."""
+    out = [dict(m) for m in messages]
+    assert out[-1]["role"] == "user"
+    out[-1]["content"] = out[-1]["content"].rstrip() + "\n" + question
+    return out
+
+
 def run_battery(
     model,
     tokenizer,
@@ -139,11 +156,12 @@ def run_battery(
     out_path: Path,
     device: str = "cpu",
     enable_thinking: bool = False,
+    variant: str = "G",
     cfg: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     cfg = cfg or load_battery_cfg()
     probes = load_probes()
-    items = generate_battery_items(fixed, cfg=cfg)
+    items = generate_battery_items(fixed, cfg=cfg, variant=variant)
     if len(items) != expected_prompt_count(cfg):
         raise RuntimeError(f"Expected {expected_prompt_count(cfg)} items, got {len(items)}")
 
@@ -151,7 +169,6 @@ def run_battery(
     if out_path.exists():
         out_path.unlink()
 
-    # Index control states by template for efficacy/mapping probes.
     controls = [it for it in items if it["type"] == "control"]
     deval_m1 = [it for it in items if it["type"] == "deval_M1"]
     deval_m2 = [it for it in items if it["type"] == "deval_M2"]
@@ -169,6 +186,7 @@ def run_battery(
     )
     n_dock = 0
     for it, probs in zip(items, all_probs):
+        base = it["base_state"]
         row = {
             "run_id": run_id,
             "checkpoint": checkpoint,
@@ -177,18 +195,28 @@ def run_battery(
             "template_id": it["template_id"],
             "set": it["set"],
             "instance_id": it["instance_id"],
+            "variant": variant,
             "p_dock_a": probs["p_dock_a"],
             "p_dock_b": probs["p_dock_b"],
             "label_mass": probs["label_mass"],
             "prompt_sha256": it["prompt_sha256"],
+            "docks_order": base["docks_order"],
+            "dock_a": fixed.dock_a,
+            "dock_b": fixed.dock_b,
+            "n1": it["state"]["n1"],
+            "n2": it["state"]["n2"],
+            "q1": base["q1"],
+            "q2": base["q2"],
+            "s1": it["state"]["s1"],
+            "s2": it["state"]["s2"],
+            "order_id": base["order_id"],
         }
         append_jsonl(out_path, row)
         n_dock += 1
 
-    # Efficacy probes
     def _ask_efficacy(base_item: dict, material: str) -> dict[str, float]:
         q = probes["efficacy"]["question"].format(material=material)
-        messages = list(base_item["messages"]) + [{"role": "user", "content": q}]
+        messages = _append_probe_to_user(base_item["messages"], q)
         return score_candidates(
             model,
             tokenizer,
@@ -196,9 +224,10 @@ def run_battery(
             probes["efficacy"]["candidates"],
             enable_thinking=enable_thinking,
             device=device,
+            prefill="",  # yes/no, not dock labels
         )
 
-    # Use first 20 of each for probes (deterministic subset).
+    # Pair efficacy: same (template, instance) control ↔ deval
     for it in deval_m1[:20]:
         pr = _ask_efficacy(it, fixed.M1)
         append_jsonl(
@@ -213,10 +242,14 @@ def run_battery(
                 "p_no": pr["no"],
                 "template_id": it["template_id"],
                 "instance_id": it["instance_id"],
+                "variant": variant,
             },
         )
-    for it in controls[:20]:
-        pr = _ask_efficacy(it, fixed.M1)
+    # Paired controls for those deval instances
+    ctrl_by_key = {(c["template_id"], c["instance_id"]): c for c in controls}
+    for it in deval_m1[:20]:
+        ctrl = ctrl_by_key[(it["template_id"], it["instance_id"])]
+        pr = _ask_efficacy(ctrl, fixed.M1)
         append_jsonl(
             out_path,
             {
@@ -229,6 +262,7 @@ def run_battery(
                 "p_no": pr["no"],
                 "template_id": it["template_id"],
                 "instance_id": it["instance_id"],
+                "variant": variant,
             },
         )
     for it in deval_m2[:20]:
@@ -245,10 +279,12 @@ def run_battery(
                 "p_no": pr["no"],
                 "template_id": it["template_id"],
                 "instance_id": it["instance_id"],
+                "variant": variant,
             },
         )
-    for it in controls[20:40]:
-        pr = _ask_efficacy(it, fixed.M2)
+    for it in deval_m2[:20]:
+        ctrl = ctrl_by_key[(it["template_id"], it["instance_id"])]
+        pr = _ask_efficacy(ctrl, fixed.M2)
         append_jsonl(
             out_path,
             {
@@ -261,17 +297,17 @@ def run_battery(
                 "p_no": pr["no"],
                 "template_id": it["template_id"],
                 "instance_id": it["instance_id"],
+                "variant": variant,
             },
         )
 
-    # Mapping probes on control
     for it in controls[:40]:
-        for dock, material_key, material_name in [
-            (fixed.dock_a, "M1", fixed.M1),
-            (fixed.dock_b, "M2", fixed.M2),
+        for dock, material_name in [
+            (fixed.dock_a, fixed.M1),
+            (fixed.dock_b, fixed.M2),
         ]:
             q = probes["mapping"]["question"].format(dock=dock)
-            messages = list(it["messages"]) + [{"role": "user", "content": q}]
+            messages = _append_probe_to_user(it["messages"], q)
             pr = score_candidates(
                 model,
                 tokenizer,
@@ -279,6 +315,7 @@ def run_battery(
                 [fixed.M1, fixed.M2],
                 enable_thinking=enable_thinking,
                 device=device,
+                prefill="",
             )
             append_jsonl(
                 out_path,
@@ -293,10 +330,10 @@ def run_battery(
                     "correct_p": pr[material_name],
                     "template_id": it["template_id"],
                     "instance_id": it["instance_id"],
+                    "variant": variant,
                 },
             )
 
-    # Competence
     correct = 0
     comp_items = generate_competence_items(cfg)
     for it in comp_items:
@@ -314,6 +351,7 @@ def run_battery(
             it["candidates"],
             enable_thinking=enable_thinking,
             device=device,
+            prefill="",
         )
         pred = max(pr, key=pr.get)
         ok = pred == it["answer"]
@@ -337,6 +375,7 @@ def run_battery(
         "n_dock_prompts": n_dock,
         "n_competence": len(comp_items),
         "competence_accuracy": correct / max(len(comp_items), 1),
+        "variant": variant,
         "out_path": str(out_path),
     }
     write_json(out_path.with_suffix(".summary.json"), summary)

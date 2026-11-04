@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import hashlib
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from typing import Any
 
 import numpy as np
@@ -29,9 +29,19 @@ class State:
     dock_a: int
     dock_b: int
 
+    @property
+    def n1(self) -> int:
+        return self.q1 - self.s1
+
+    @property
+    def n2(self) -> int:
+        return self.q2 - self.s2
+
     def to_dict(self) -> dict[str, Any]:
         d = asdict(self)
         d["docks_order"] = list(self.docks_order)
+        d["n1"] = self.n1
+        d["n2"] = self.n2
         return d
 
 
@@ -46,11 +56,13 @@ def contains_forbidden(text: str) -> bool:
 
 
 def validate_training_state(state: State) -> None:
+    # Training: both materials still needed (n1, n2 ≥ 1) ⇒ s < q.
+    if state.n1 < 1 or state.n2 < 1:
+        raise ValueError(f"Training requires n1,n2 ≥ 1: {state}")
     if state.s1 >= state.q1 or state.s2 >= state.q2:
         raise ValueError(f"Stock must be < recipe quantity: {state}")
     if state.s1 < 0 or state.s2 < 0:
         raise ValueError("Negative stock")
-    # Surface fields alone must not introduce forbidden words (nonce pools checked elsewhere).
     blob = " ".join(
         [
             str(state.order_id),
@@ -66,6 +78,20 @@ def validate_training_state(state: State) -> None:
     )
     if contains_forbidden(blob):
         raise ValueError(f"Forbidden word in training state fields: {blob}")
+
+
+def derive_state_for_type(base: State, prompt_type: str) -> State:
+    """Derive a typed state from a paired base control state (F3)."""
+    if prompt_type == "control":
+        return base
+    if prompt_type == "deval_M1":
+        # Full for M1: s1 = q1 ⇒ n1 = 0
+        return replace(base, s1=base.q1, state_id=base.state_id + ":deval_M1")
+    if prompt_type == "deval_M2":
+        return replace(base, s2=base.q2, state_id=base.state_id + ":deval_M2")
+    if prompt_type in ("sham", "spoil_M1", "degrade_M1"):
+        return base
+    raise ValueError(f"Unknown prompt_type {prompt_type}")
 
 
 def generate_states(
@@ -84,13 +110,9 @@ def generate_states(
     for i in range(n):
         q1 = int(rng.integers(qlo, qhi + 1))
         q2 = int(rng.integers(qlo, qhi + 1))
-        if training:
-            s1 = int(rng.integers(0, q1))
-            s2 = int(rng.integers(0, q2))
-        else:
-            # Test surfaces may still use understocked training-like stock by default.
-            s1 = int(rng.integers(0, q1))
-            s2 = int(rng.integers(0, q2))
+        # Always draw understocked base states (n ≥ 1); deval mutates later.
+        s1 = int(rng.integers(0, q1))
+        s2 = int(rng.integers(0, q2))
         docks_order = ("a", "b") if rng.random() < 0.5 else ("b", "a")
         payload = {
             "i": i,

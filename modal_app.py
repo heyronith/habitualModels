@@ -75,18 +75,38 @@ def template_check_qwen(model_key: str = "qwen3_1_7b") -> dict[str, Any]:
     from habit.model.scoring import full_softmax_renorm_probs, next_token_logits, restricted_softmax_probs
     from habit.model.tokens import check_single_token
 
+    from habit.model.chat import choose_prefill_for_labels, default_prefill
+
     t0 = time.time()
     model, tokenizer = load_model(model_key, device="cuda", dtype=torch.bfloat16)
+    pref = choose_prefill_for_labels(tokenizer)
     fixed = draw_run_fixed(0, 42, tokenizer=tokenizer)
     st = generate_states(fixed, 1, 0, training=True)[0]
-    rp = render_prompt(st, "A1", prompt_type="control")
-    prompt = render_chat(tokenizer, rp.messages(), enable_thinking=False)
+    prompts = {}
+    for variant in ("G", "R"):
+        rp = render_prompt(st, "A1", prompt_type="control", variant=variant)
+        prompts[variant] = {
+            "system": rp.system,
+            "user": rp.user,
+            "rendered": render_chat(
+                tokenizer, rp.messages(), enable_thinking=False, prefill=pref
+            ),
+        }
     labels = [str(i) for i in range(2, 10)] + ["yes", "no"]
     checks = [
         {"text": c.text, "token_ids": c.token_ids, "is_single": c.is_single}
         for c in check_single_token(tokenizer, labels)
     ]
-    enc = tokenize_prompt(tokenizer, prompt, device="cuda")
+    # Prefill+label continuity
+    pref_ok = True
+    pref_ids = tokenizer.encode(pref, add_special_tokens=False)
+    for lab in [str(i) for i in range(2, 10)]:
+        full = tokenizer.encode(pref + lab, add_special_tokens=False)
+        lab_ids = tokenizer.encode(lab, add_special_tokens=False)
+        if full != pref_ids + lab_ids or len(lab_ids) != 1:
+            pref_ok = False
+            break
+    enc = tokenize_prompt(tokenizer, prompts["G"]["rendered"], device="cuda")
     with torch.no_grad():
         logits = next_token_logits(model, enc["input_ids"], enc.get("attention_mask"))[0]
     dock_ids = [
@@ -99,7 +119,11 @@ def template_check_qwen(model_key: str = "qwen3_1_7b") -> dict[str, Any]:
     result = {
         "model_key": model_key,
         "revision": resolve_model_spec(model_key)["revision"],
-        "prompt": prompt,
+        "prefill": pref,
+        "default_prefill": default_prefill(),
+        "prefill_label_ok": pref_ok,
+        "prompts": prompts,
+        "prompt": prompts["G"]["rendered"],
         "checks": checks,
         "all_single": all(c["is_single"] for c in checks),
         "dock_a": fixed.dock_a,
@@ -110,7 +134,7 @@ def template_check_qwen(model_key: str = "qwen3_1_7b") -> dict[str, Any]:
         "gpu": "L4",
         "gpu_seconds": time.time() - t0,
     }
-    out = Path(f"/vol/reports/T1_template_check_{model_key}.json")
+    out = Path(f"/vol/reports/T1.1_template_check_{model_key}.json")
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(result, indent=2) + "\n")
     vol.commit()
@@ -123,17 +147,19 @@ def baseline_battery_cell(
     run_index: int,
     seed: int,
     run_id: str,
+    variant: str = "G",
 ) -> dict[str, Any]:
     import sys
 
     sys.path.insert(0, "/root/project/src")
     import torch
-    import yaml
 
     from habit.analysis.metrics import load_jsonl, summarize_battery
-    from habit.env.counterbalance import draw_run_fixed
+    from habit.env.bias_guard import draw_run_fixed_with_bias_guard
     from habit.infra.logging import write_json
+    from habit.model.chat import choose_prefill_for_labels, default_prefill
     from habit.model.loading import load_model, resolve_model_spec
+    from habit.model.tokens import check_single_token
     from habit.test.battery import run_battery
 
     t0 = time.time()
@@ -141,9 +167,28 @@ def baseline_battery_cell(
         torch.cuda.reset_peak_memory_stats()
 
     model, tokenizer = load_model(model_key, device="cuda", dtype=torch.bfloat16)
-    fixed = draw_run_fixed(run_index, seed, tokenizer=tokenizer)
+    # Verify prefill keeps labels single-token (F2).
+    pref = choose_prefill_for_labels(tokenizer)
+    assert pref == default_prefill(), f"prefill mismatch: {pref!r} vs {default_prefill()!r}"
+    label_checks = [
+        {"text": c.text, "token_ids": c.token_ids, "is_single": c.is_single}
+        for c in check_single_token(tokenizer, [str(i) for i in range(2, 10)])
+    ]
+    assert all(c["is_single"] for c in label_checks)
+
     out_dir = Path(f"/vol/runs/{run_id}")
     out_dir.mkdir(parents=True, exist_ok=True)
+    bias_log = out_dir / f"label_draw_tries_cell{run_index}.jsonl"
+    fixed, tries = draw_run_fixed_with_bias_guard(
+        model,
+        tokenizer,
+        run_index,
+        seed,
+        variant=variant,
+        device="cuda",
+        enable_thinking=False,
+        log_path=bias_log,
+    )
     local_out = out_dir / f"test_results_cell{run_index}.jsonl"
     summary = run_battery(
         model,
@@ -154,6 +199,7 @@ def baseline_battery_cell(
         out_path=local_out,
         device="cuda",
         enable_thinking=False,
+        variant=variant,
     )
     rows = load_jsonl(local_out)
     metrics = summarize_battery(rows)
@@ -163,8 +209,12 @@ def baseline_battery_cell(
         "model_key": model_key,
         "model_revision": spec["revision"],
         "run_index": run_index,
+        "variant": variant,
         "cell": fixed.cell,
         "fixed": fixed.to_dict(),
+        "prefill": pref,
+        "label_token_checks": label_checks,
+        "label_draw_tries": tries,
         "battery_summary": summary,
         "metrics": metrics,
         "gpu": "L4",
@@ -173,8 +223,9 @@ def baseline_battery_cell(
         "out_path": str(local_out),
     }
     if local_out.exists():
-        # May be large (~600+ rows); still needed in the repo as evidence.
         result["artifact_test_results.jsonl"] = local_out.read_text(encoding="utf-8")
+    if bias_log.exists():
+        result["artifact_label_draw_tries.jsonl"] = bias_log.read_text(encoding="utf-8")
     write_json(out_dir / f"cell{run_index}_summary.json", result)
     vol.commit()
     return result

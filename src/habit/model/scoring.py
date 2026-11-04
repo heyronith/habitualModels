@@ -61,8 +61,9 @@ def score_single_token_candidates(
     *,
     enable_thinking: bool = False,
     device: str = "cpu",
+    prefill: str | None = None,
 ) -> dict[str, float]:
-    prompt = render_chat(tokenizer, messages, enable_thinking=enable_thinking)
+    prompt = render_chat(tokenizer, messages, enable_thinking=enable_thinking, prefill=prefill)
     enc = tokenize_prompt(tokenizer, prompt, device=device)
     logits = next_token_logits(model, enc["input_ids"], enc.get("attention_mask"))[0]
     ids = []
@@ -83,9 +84,10 @@ def score_multi_token_candidate_logprob(
     *,
     enable_thinking: bool = False,
     device: str = "cpu",
+    prefill: str | None = None,
 ) -> float:
     """Sum of conditional log-probs of answer tokens given the prompt."""
-    prompt = render_chat(tokenizer, messages, enable_thinking=enable_thinking)
+    prompt = render_chat(tokenizer, messages, enable_thinking=enable_thinking, prefill=prefill)
     ans_ids = encode_answer_token_ids(tokenizer, answer)
     if not ans_ids:
         raise ValueError(f"Empty tokenization for {answer!r}")
@@ -109,18 +111,31 @@ def score_candidates(
     *,
     enable_thinking: bool = False,
     device: str = "cpu",
+    prefill: str | None = None,
 ) -> dict[str, float]:
     """Exact candidate scoring; multi-token answers use sum of token log-probs then softmax."""
     lengths = [len(encode_answer_token_ids(tokenizer, c)) for c in candidates]
     if all(L == 1 for L in lengths):
         return score_single_token_candidates(
-            model, tokenizer, messages, candidates, enable_thinking=enable_thinking, device=device
+            model,
+            tokenizer,
+            messages,
+            candidates,
+            enable_thinking=enable_thinking,
+            device=device,
+            prefill=prefill,
         )
     logps = []
     for c in candidates:
         logps.append(
             score_multi_token_candidate_logprob(
-                model, tokenizer, messages, c, enable_thinking=enable_thinking, device=device
+                model,
+                tokenizer,
+                messages,
+                c,
+                enable_thinking=enable_thinking,
+                device=device,
+                prefill=prefill,
             )
         )
     t = torch.tensor(logps, dtype=torch.float32)
@@ -137,6 +152,7 @@ def dock_policy_probs(
     *,
     enable_thinking: bool = False,
     device: str = "cpu",
+    prefill: str | None = None,
 ) -> dict[str, float]:
     return dock_policy_probs_batch(
         model,
@@ -146,6 +162,7 @@ def dock_policy_probs(
         dock_b,
         enable_thinking=enable_thinking,
         device=device,
+        prefill=prefill,
     )[0]
 
 
@@ -159,6 +176,7 @@ def dock_policy_probs_batch(
     enable_thinking: bool = False,
     device: str = "cpu",
     microbatch: int = 8,
+    prefill: str | None = None,
 ) -> list[dict[str, float]]:
     """Batched exact dock probabilities (pad to max length within microbatch)."""
     id_a = encode_answer_token_ids(tokenizer, str(dock_a))[0]
@@ -166,7 +184,9 @@ def dock_policy_probs_batch(
     out_rows: list[dict[str, float]] = []
     for start in range(0, len(messages_batch), microbatch):
         chunk = messages_batch[start : start + microbatch]
-        prompts = [render_chat(tokenizer, m, enable_thinking=enable_thinking) for m in chunk]
+        prompts = [
+            render_chat(tokenizer, m, enable_thinking=enable_thinking, prefill=prefill) for m in chunk
+        ]
         id_lists = [tokenizer.encode(p, add_special_tokens=False) for p in prompts]
         max_len = max(len(x) for x in id_lists)
         pad_id = tokenizer.pad_token_id if tokenizer.pad_token_id is not None else 0
@@ -206,9 +226,8 @@ def sample_dock_action(
     generator: torch.Generator | None = None,
 ) -> tuple[int, float, float, float]:
     """Sample from 2-way softmax. Returns (label, log_pi, p_a, label_mass)."""
-    prompt = render_chat(tokenizer, messages, enable_thinking=enable_thinking)
+    prompt = render_chat(tokenizer, messages, enable_thinking=enable_thinking, prefill=None)
     enc = tokenize_prompt(tokenizer, prompt, device=device)
-    # Need grad for training — caller controls torch.set_grad_enabled
     out = model(input_ids=enc["input_ids"], attention_mask=enc.get("attention_mask"))
     logits = out.logits[:, -1, :][0]
     ids = [
@@ -217,7 +236,6 @@ def sample_dock_action(
     ]
     probs = restricted_softmax_probs(logits, ids)
     mass = label_mass(logits.detach(), ids)
-    # sample
     if generator is None:
         idx = int(torch.multinomial(probs.detach(), 1).item())
     else:

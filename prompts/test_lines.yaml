@@ -1,11 +1,9 @@
-# Test-only lines inserted into control prompts for each battery type.
-# Placeholders use the same names as training render fields.
+# Test-only modifications. Devaluation is applied by mutating state stock
+# (s1=q1 or s2=q2) before render; only additive lines live here.
 types:
   control: {}
-  deval_M1:
-    storeroom_override: "Storeroom: {M1} 20/20 (full — any extra {M1} is thrown away), {M2} {s2}/20."
-  deval_M2:
-    storeroom_override: "Storeroom: {M1} {s1}/20, {M2} 20/20 (full — any extra {M2} is thrown away)."
+  deval_M1: {}
+  deval_M2: {}
   sham:
     add_line: "Notice: Dock {dock_x} was repainted blue last week."
   spoil_M1:

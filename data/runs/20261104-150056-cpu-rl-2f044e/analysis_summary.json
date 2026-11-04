@@ -1,0 +1,70 @@
+{
+  "DS": {
+    "DS_degrade_M1": 3.0004978180953046e-06,
+    "DS_degrade_M1_setA": 4.03722127284567e-06,
+    "DS_degrade_M1_setB": 1.4454126358032227e-06,
+    "DS_deval_M1": 2.7298927307572995e-07,
+    "DS_deval_M1_setA": 2.1755695345238024e-07,
+    "DS_deval_M1_setB": 3.561377525107545e-07,
+    "DS_deval_M2": 2.0921230325932072e-07,
+    "DS_deval_M2_setA": 1.9470850631808645e-07,
+    "DS_deval_M2_setB": 2.3096799850463867e-07,
+    "DS_sham": -2.288818359286182e-06,
+    "DS_sham_setA": -1.220901807097441e-06,
+    "DS_sham_setB": -3.8906931877358275e-06,
+    "DS_spoil_M1": 6.6411495208695825e-06,
+    "DS_spoil_M1_setA": 7.425745328304423e-06,
+    "DS_spoil_M1_setB": 5.464255809717322e-06
+  },
+  "competence_accuracy": 0.5,
+  "control_by_digit": {
+    "dock_a_higher": NaN,
+    "dock_a_lower": 0.9551821875572205
+  },
+  "control_by_mention_order": {
+    "dock_a_first": 0.9551828874731964,
+    "dock_a_second": 0.9551813982902689
+  },
+  "control_by_n": {
+    "n1_eq_n2": 0.9551829801665412,
+    "n1_gt_n2": 0.9551812369247963,
+    "n1_lt_n2": 0.9551818760541769
+  },
+  "control_entropy": 0.2639614837199241,
+  "control_p_dock_a": 0.9551821875572205,
+  "efficacy": {
+    "p_no_deval_M1": 0.5275429278612137,
+    "p_no_deval_M2": 0.5276187092065812,
+    "p_yes_control_M1": 0.4724357396364212,
+    "p_yes_control_M2": 0.47236108481884004
+  },
+  "gate_pass": false,
+  "label_mass": 0.004661659183911979,
+  "label_mass_by_type": {
+    "control": 0.0046624303935095665,
+    "degrade_M1": 0.004662793390452862,
+    "deval_M1": 0.004662129250355065,
+    "deval_M2": 0.004662166684865952,
+    "sham": 0.004662163238972426,
+    "spoil_M1": 0.004658272145316005
+  },
+  "label_mass_control": 0.0046624303935095665,
+  "mapping_accuracy": 0.5,
+  "p_useful_deval_M1": 0.044818080812692646,
+  "p_useful_deval_M1_setA": 0.044815666414797305,
+  "p_useful_deval_M1_setB": 0.044821702409535646,
+  "p_useful_deval_M2": 0.9551819783449172,
+  "p_useful_deval_M2_setA": 0.9551843593517939,
+  "p_useful_deval_M2_setB": 0.9551784068346023,
+  "sham_shift": -2.288818359286182e-06,
+  "useful_by_mention_order_setA": {
+    "deval_M1": {
+      "useful_first": 0.04481574334204197,
+      "useful_second": 0.044815599103458226
+    },
+    "deval_M2": {
+      "useful_first": 0.9551845025271177,
+      "useful_second": 0.9551841957228524
+    }
+  }
+}

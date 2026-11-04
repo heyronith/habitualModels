@@ -10,6 +10,7 @@ import torch
 import torch.nn.functional as F
 import yaml
 
+from habit.env.bias_guard import draw_run_fixed_with_bias_guard
 from habit.env.counterbalance import RunFixed, draw_run_fixed
 from habit.env.render import load_templates, render_prompt
 from habit.env.reward import reward_for_action
@@ -21,6 +22,8 @@ from habit.model.tokens import encode_answer_token_ids
 from habit.train.checkpoints import save_checkpoint
 from habit.train.criterion import CriterionTracker
 from habit.train.params import apply_trainable_mode, count_trainable
+
+SET_A_TEMPLATES = ("A1", "A2", "A3")
 
 
 def _set_seeds(seed: int) -> None:
@@ -74,13 +77,14 @@ def evaluate_mean_p_dock_a(
     *,
     enable_thinking: bool,
     device: str,
+    variant: str = "G",
 ) -> float:
     model.eval()
     ps = []
     id_a = encode_answer_token_ids(tokenizer, str(fixed.dock_a))[0]
     id_b = encode_answer_token_ids(tokenizer, str(fixed.dock_b))[0]
     for st in states:
-        rp = render_prompt(st, template_id, prompt_type="control")
+        rp = render_prompt(st, template_id, prompt_type="control", variant=variant)
         prompt = render_chat(tokenizer, rp.messages(), enable_thinking=enable_thinking)
         enc = tokenize_prompt(tokenizer, prompt, device=device)
         out = model(input_ids=enc["input_ids"], attention_mask=enc.get("attention_mask"))
@@ -89,6 +93,11 @@ def evaluate_mean_p_dock_a(
         ps.append(float(probs[0].item()))
     model.train()
     return float(np.mean(ps))
+
+
+def sample_set_a_template(rng: np.random.Generator) -> str:
+    """Uniform over A1–A3 (F6). Set B never used in training."""
+    return str(rng.choice(SET_A_TEMPLATES))
 
 
 def train_rl(
@@ -105,14 +114,29 @@ def train_rl(
     _set_seeds(int(cfg["seed"]))
     run_dir.mkdir(parents=True, exist_ok=True)
     templates = load_templates()
-    template_id = "A1"  # training uses Set A; A1 as canonical surface for RL states
+    variant = str(cfg.get("variant", "G"))
+    eval_template_id = "A1"
 
-    fixed = draw_run_fixed(int(cfg["run_index"]), int(cfg["seed"]), tokenizer=tokenizer)
+    # F5: starting-bias guard on dock labels (skip heavy guard on tiny CPU unless asked).
+    bias_log = run_dir / "label_draw_tries.jsonl"
+    if model_key == "tiny" and not cfg.get("force_bias_guard", False):
+        fixed = draw_run_fixed(int(cfg["run_index"]), int(cfg["seed"]), tokenizer=tokenizer)
+        write_json(run_dir / "label_draw_tries.summary.json", {"skipped": True, "reason": "tiny_cpu"})
+    else:
+        fixed, _tries = draw_run_fixed_with_bias_guard(
+            model,
+            tokenizer,
+            int(cfg["run_index"]),
+            int(cfg["seed"]),
+            variant=variant,
+            device=device,
+            enable_thinking=bool(cfg.get("enable_thinking", False)),
+            log_path=bias_log,
+        )
     write_json(run_dir / "run_fixed.json", fixed.to_dict())
 
     mode = cfg["trainable_mode"]
     if model_key == "tiny" and mode in ("lora", "last_mlp"):
-        # Tiny model: full_tiny for smoke CPU path when peft targets missing modules naming.
         try:
             model, lr = apply_trainable_mode(model, mode, cfg)
         except Exception:
@@ -141,6 +165,7 @@ def train_rl(
 
     eval_states = generate_states(fixed, int(cfg["eval_n_states"]), int(cfg["eval_seed"]), training=True)
     enable_thinking = bool(cfg.get("enable_thinking", False))
+    tmpl_rng = np.random.default_rng(int(cfg["seed"]) + 17)
 
     actions_path = run_dir / "actions.jsonl"
     metrics_path = run_dir / "metrics.jsonl"
@@ -158,11 +183,35 @@ def train_rl(
         "lr": lr,
         "n_trainable": count_trainable(model),
         "fixed": fixed.to_dict(),
-        "algorithm_notes": "group REINFORCE; no KL term; no entropy bonus",
+        "variant": variant,
+        "train_templates": list(SET_A_TEMPLATES),
+        "algorithm_notes": "group REINFORCE; no KL term; no entropy bonus; Set A templates A1–A3 uniform",
         "gpu_type": gpu_type,
         "started_utc": utc_now_iso(),
     }
     write_json(run_dir / "config.json", config_resolved)
+
+    # F5: update-0 evaluation before any training step.
+    mean_p0 = evaluate_mean_p_dock_a(
+        model,
+        tokenizer,
+        fixed,
+        eval_states,
+        eval_template_id,
+        enable_thinking=enable_thinking,
+        device=device,
+        variant=variant,
+    )
+    append_jsonl(
+        metrics_path,
+        {
+            "update": 0,
+            "mean_p_dock_a": mean_p0,
+            "c_crit": None,
+            "streak": 0,
+            "kind": "eval",
+        },
+    )
 
     c_crit = None
     final_update = 0
@@ -170,7 +219,6 @@ def train_rl(
         final_update = update
         u_t0 = time.time()
         states = generate_states(fixed, B, int(cfg["seed"]) + update * 10007, training=True)
-        # Sample G actions per state
         messages_list: list[list[dict[str, str]]] = []
         actions: list[int] = []
         rewards: list[float] = []
@@ -180,7 +228,11 @@ def train_rl(
         model.eval()
         with torch.no_grad():
             for st in states:
-                rp = render_prompt(st, template_id, prompt_type="control", templates=templates)
+                tid = sample_set_a_template(tmpl_rng)
+                assert tid in SET_A_TEMPLATES and tid[0] == "A"
+                rp = render_prompt(
+                    st, tid, prompt_type="control", variant=variant, templates=templates
+                )
                 prompt = render_chat(tokenizer, rp.messages(), enable_thinking=enable_thinking)
                 enc = tokenize_prompt(tokenizer, prompt, device=device)
                 out = model(input_ids=enc["input_ids"], attention_mask=enc.get("attention_mask"))
@@ -203,6 +255,8 @@ def train_rl(
                             "update": update,
                             "state_id": st.state_id,
                             "prompt_sha256": rp.sha256,
+                            "template_id": tid,
+                            "variant": variant,
                             "action": action,
                             "reward": r,
                         },
@@ -261,9 +315,10 @@ def train_rl(
                 tokenizer,
                 fixed,
                 eval_states,
-                template_id,
+                eval_template_id,
                 enable_thinking=enable_thinking,
                 device=device,
+                variant=variant,
             )
             c_crit = tracker.observe(update, mean_p)
             append_jsonl(

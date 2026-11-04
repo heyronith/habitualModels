@@ -36,6 +36,7 @@ def main() -> None:
         "eval_every": 5,
         "eval_n_states": 8,
         "force_checkpoints": [20],
+        "variant": "G",
         "optimizer": {**cfg["optimizer"], "lr_lora": 1e-3},
     }
     run_id = make_run_id("cpu-rl")
@@ -53,16 +54,16 @@ def main() -> None:
     )
     print("SFT summary", clone_summary)
 
-    # Battery on final RL checkpoint
-    fixed = draw_run_fixed(int(cfg["run_index"]), int(cfg["seed"]), tokenizer=tokenizer)
-    # Reload trained weights
-    from habit.train.checkpoints import load_checkpoint
+    # Battery on final RL checkpoint (use twin's fixed env)
+    import json
 
-    ckpt = run_dir / "checkpoints" / "update_20"
-    model3, tokenizer3 = load_model("tiny", device="cpu")
-    # Match trainable mode used in training
+    from habit.env.counterbalance import RunFixed
+    from habit.train.checkpoints import load_checkpoint
     from habit.train.params import apply_trainable_mode
 
+    fixed = RunFixed(**json.loads((run_dir / "run_fixed.json").read_text()))
+    ckpt = run_dir / "checkpoints" / "update_20"
+    model3, tokenizer3 = load_model("tiny", device="cpu")
     model3, _ = apply_trainable_mode(model3, "full_tiny", cfg)
     load_checkpoint(model3, ckpt, strict=False)
     model3.eval()
@@ -74,6 +75,7 @@ def main() -> None:
         checkpoint="update_20",
         out_path=run_dir / "test_results.jsonl",
         device="cpu",
+        variant="G",
     )
     rows = load_jsonl(run_dir / "test_results.jsonl")
     metrics = summarize_battery(rows)

@@ -2,13 +2,16 @@ from __future__ import annotations
 
 import hashlib
 from dataclasses import dataclass
-from pathlib import Path
 from typing import Any
 
 import yaml
 
-from habit.env.state import State, contains_forbidden
+from habit.env.state import State, contains_forbidden, derive_state_for_type
 from habit.infra.paths import PROMPTS
+
+
+def load_variants() -> dict[str, dict[str, Any]]:
+    return yaml.safe_load((PROMPTS / "variants.yaml").read_text())
 
 
 def load_templates() -> dict[str, dict[str, Any]]:
@@ -49,6 +52,8 @@ def render_fields(
         "q2": state.q2,
         "s1": state.s1,
         "s2": state.s2,
+        "n1": state.n1,
+        "n2": state.n2,
         "M1": state.M1,
         "M2": state.M2,
         "dock_a": state.dock_a,
@@ -62,6 +67,7 @@ def render_fields(
 class RenderedPrompt:
     template_id: str
     set: str
+    variant: str
     system: str
     user: str
     prompt_type: str
@@ -84,26 +90,10 @@ def apply_test_type(
     prompt_type: str,
     test_lines: dict[str, Any] | None = None,
 ) -> str:
+    """Apply additive test-only lines (sham/spoil/degrade). Deval is state mutation."""
     test_lines = test_lines or load_test_lines()
     spec = test_lines.get(prompt_type, {})
     out = user
-    if "storeroom_override" in spec:
-        override = spec["storeroom_override"].format(**fields).rstrip()
-        # Replace any Storeroom / Stock line variants.
-        lines = out.splitlines()
-        replaced = False
-        new_lines = []
-        for line in lines:
-            if line.startswith("Storeroom:") or line.startswith("Stock on hand") or line.startswith(
-                "Current storeroom:"
-            ) or line.startswith("Storeroom levels:") or line.startswith("Storeroom reading"):
-                new_lines.append(override)
-                replaced = True
-            else:
-                new_lines.append(line)
-        if not replaced:
-            new_lines.append(override)
-        out = "\n".join(new_lines)
     if "add_line" in spec:
         out = out.rstrip() + "\n" + spec["add_line"].format(**fields)
     return out
@@ -114,20 +104,39 @@ def render_prompt(
     template_id: str,
     *,
     prompt_type: str = "control",
+    variant: str = "G",
     dock_x: int | None = None,
     templates: dict[str, dict[str, Any]] | None = None,
+    variants: dict[str, dict[str, Any]] | None = None,
 ) -> RenderedPrompt:
     templates = templates or load_templates()
+    variants = variants or load_variants()
+    if variant not in variants:
+        raise KeyError(f"Unknown variant {variant}; known={sorted(variants)}")
     t = templates[template_id]
-    fields = render_fields(state, dock_x=dock_x)
-    system = t["system"].format(**fields)
+    typed = derive_state_for_type(state, prompt_type)
+    fields = render_fields(typed, dock_x=dock_x)
+    system = variants[variant]["system"]
     user = t["user"].format(**fields).rstrip()
     user = apply_test_type(user, fields, prompt_type)
-    if prompt_type == "control" and contains_forbidden(user):
-        raise ValueError(f"Forbidden word leaked into control prompt: {user}")
+    if prompt_type == "control":
+        if contains_forbidden(user):
+            raise ValueError(f"Forbidden word leaked into control prompt: {user}")
+        # Training/control must never show zero still-needed for either material.
+        if typed.n1 < 1 or typed.n2 < 1:
+            raise ValueError("Control/training prompt has n=0")
+        zero_pat_m1 = f"0 {typed.M1}"
+        zero_pat_m2 = f"0 {typed.M2}"
+        # Still-needed line must not claim 0 of a material on control.
+        for line in user.splitlines():
+            low = line.lower()
+            if "still needed" in low or low.startswith("remaining") or low.startswith("still needed"):
+                if zero_pat_m1 in line or zero_pat_m2 in line:
+                    raise ValueError(f"Zero still-needed leaked into control: {line}")
     return RenderedPrompt(
         template_id=template_id,
         set=t["set"],
+        variant=variant,
         system=system,
         user=user,
         prompt_type=prompt_type,

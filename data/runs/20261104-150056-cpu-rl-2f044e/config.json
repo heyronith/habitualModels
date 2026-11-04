@@ -1,0 +1,85 @@
+{
+  "algorithm": "group_reinforce",
+  "algorithm_notes": "group REINFORCE; no KL term; no entropy bonus; Set A templates A1\u2013A3 uniform",
+  "batch_states": 4,
+  "criterion_consecutive": 3,
+  "criterion_threshold": 0.95,
+  "dtype": "bf16",
+  "enable_thinking": false,
+  "ended_utc": "2026-11-04T15:01:02Z",
+  "entropy_coef": 0.0,
+  "eval_every": 5,
+  "eval_n_states": 8,
+  "eval_seed": 12345,
+  "fixed": {
+    "M1": "dax",
+    "M2": "vexa",
+    "cell": 0,
+    "dock_a": 5,
+    "dock_b": 9,
+    "reward_a": 1.0,
+    "reward_b": 0.6,
+    "run_index": 0,
+    "seed": 42
+  },
+  "force_checkpoints": [
+    20
+  ],
+  "gpu_preference": [
+    "L4",
+    "A10G",
+    "L40S"
+  ],
+  "gpu_type": null,
+  "group_size": 2,
+  "heldout_eval_templates": "A",
+  "k_crit": 6,
+  "kl_coef": 0.0,
+  "last_mlp": {
+    "n_layers": 4
+  },
+  "lora": {
+    "alpha": 32,
+    "dropout": 0.0,
+    "r": 16,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ]
+  },
+  "loss_dtype": "fp32",
+  "loss_microbatch": 8,
+  "lr": 0.001,
+  "max_updates": 20,
+  "model_key": "tiny",
+  "n_trainable": 139840,
+  "name": "cpu-integration",
+  "optimizer": {
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "lr_last_mlp": 1e-05,
+    "lr_lora": 0.001,
+    "name": "adam"
+  },
+  "run_index": 0,
+  "seed": 42,
+  "started_utc": "2026-11-04T15:00:56Z",
+  "status": "no_criterion",
+  "template_set": "A",
+  "train_templates": [
+    "A1",
+    "A2",
+    "A3"
+  ],
+  "trainable_mode": "full_tiny",
+  "trainable_mode_effective": "full_tiny",
+  "variant": "G"
+}

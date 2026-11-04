@@ -84,7 +84,7 @@ def train_sft_clone(
     )
     enable_thinking = bool(cfg.get("enable_thinking", False))
     templates = load_templates()
-    template_id = "A1"
+    variant = str(cfg.get("variant", "G"))
     B = int(cfg["batch_states"])
     G = int(cfg["group_size"])
 
@@ -125,17 +125,20 @@ def train_sft_clone(
     for update in updates:
         u_t0 = time.time()
         rows = by_update[update]
-        # Expected order: for each of B states, G actions — as RL appended.
         states = generate_states(fixed, B, int(cfg["seed"]) + update * 10007, training=True)
+        if len(rows) != B * G:
+            raise RuntimeError(
+                f"SFT clone action count mismatch at update {update}: {len(rows)} vs {B * G}"
+            )
+        # Rebuild prompts from logged template_id (F6); G rows share one state×template.
         expected = []
-        for st in states:
-            rp = render_prompt(st, template_id, prompt_type="control", templates=templates)
+        for si, st in enumerate(states):
+            block = rows[si * G : (si + 1) * G]
+            tid = block[0].get("template_id", "A1")
+            var = block[0].get("variant", variant)
+            rp = render_prompt(st, tid, prompt_type="control", variant=var, templates=templates)
             for _g in range(G):
                 expected.append((st, rp))
-        if len(rows) != len(expected):
-            raise RuntimeError(
-                f"SFT clone action count mismatch at update {update}: {len(rows)} vs {len(expected)}"
-            )
 
         opt.zero_grad(set_to_none=True)
         micro = int(cfg.get("loss_microbatch", 8))

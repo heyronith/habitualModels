@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import numpy as np
-
 from habit.env.counterbalance import cell_for_run, draw_run_fixed
 from habit.env.names import load_env_config, validated_pools
 from habit.env.render import render_prompt
@@ -31,9 +29,18 @@ def test_no_forbidden_and_stock_constraint():
     states = generate_states(fixed, 200, 7, training=True)
     for st in states:
         validate_training_state(st)
+        assert st.n1 >= 1 and st.n2 >= 1
         assert st.s1 < st.q1 and st.s2 < st.q2
-        rp = render_prompt(st, "A1", prompt_type="control")
+        rp = render_prompt(st, "A1", prompt_type="control", variant="G")
         assert not contains_forbidden(rp.user)
+        assert "automatic" not in rp.user.lower()
+        assert "/20" not in rp.user
+        # Still-needed line must not show 0 of either material (storeroom may be 0).
+        for line in rp.user.splitlines():
+            low = line.lower()
+            if "still needed" in low or low.startswith("remaining"):
+                assert f"0 {st.M1}" not in line
+                assert f"0 {st.M2}" not in line
         for w in FORBIDDEN:
             assert w not in rp.user.lower()
 

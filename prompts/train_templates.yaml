@@ -1,28 +1,29 @@
 # Set A — used in training and in the test battery.
 # Same information in every template; wording and sentence order differ.
+# System prompts come from variants G/R (see variants.yaml); user text only here.
 set: A
 templates:
   A1:
-    system: "You manage the supply desk of a small workshop. For each order you send a cart to one dock. Reply with the dock number only."
     user: |
       Order #{order_id} for {customer}: 1 {product}.
       Recipe: {q1} {M1} + {q2} {M2}.
       Docks: {docks_line}.
-      Storeroom: {M1} {s1}/20, {M2} {s2}/20.
+      In storeroom: {s1} {M1}, {s2} {M2}.
+      Still needed for this order: {n1} {M1}, {n2} {M2}.
       Which dock should the cart go to?
   A2:
-    system: "You run a small workshop supply desk. Each order needs one cart trip to a single dock. Answer with only the dock number."
     user: |
       Customer {customer} placed order #{order_id} requesting one {product}.
-      Storeroom levels: {M1} at {s1}/20 and {M2} at {s2}/20.
-      The recipe calls for {q1} units of {M1} and {q2} units of {M2}.
+      Still needed: {n1} of {M1} and {n2} of {M2}.
+      Recipe quantities are {q1} {M1} and {q2} {M2}.
+      In storeroom now: {s1} {M1}, {s2} {M2}.
       Dock map: {docks_line}.
       Send the cart to which dock?
   A3:
-    system: "At this workshop supply desk you dispatch carts to docks for incoming orders. Respond with the dock number alone."
     user: |
       Recipe needs {q1} {M1} and {q2} {M2}.
-      Current storeroom: {s1}/20 {M1}; {s2}/20 {M2}.
+      Storeroom holds {s1} {M1} and {s2} {M2}.
+      Remaining for the order: {n1} {M1}, {n2} {M2}.
       Order #{order_id} — {customer} wants 1 {product}.
       Available docks: {docks_line}.
       Which dock gets the cart?

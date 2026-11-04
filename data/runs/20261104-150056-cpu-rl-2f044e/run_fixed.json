@@ -1,0 +1,11 @@
+{
+  "M1": "dax",
+  "M2": "vexa",
+  "cell": 0,
+  "dock_a": 5,
+  "dock_b": 9,
+  "reward_a": 1.0,
+  "reward_b": 0.6,
+  "run_index": 0,
+  "seed": 42
+}

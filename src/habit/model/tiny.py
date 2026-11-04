@@ -47,7 +47,7 @@ def build_tiny_tokenizer(vocab_size: int = 1024) -> PreTrainedTokenizerFast:
 
     # Atomic tokens first (longest match via WordLevel after splitting to atoms).
     specials = ["<|im_start|>", "<|im_end|>", "<think>", "</think>", "<pad>", "<unk>"]
-    atoms = [str(i) for i in range(10)] + ["yes", "no"]
+    atoms = [str(i) for i in range(10)] + ["yes", "no", "Dock", "Dock "]
     # Remaining printable ASCII as single-char tokens.
     chars = [chr(i) for i in range(32, 127)]
     vocab: dict[str, int] = {}
