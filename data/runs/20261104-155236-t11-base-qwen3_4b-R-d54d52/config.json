@@ -1,0 +1,827 @@
+{
+  "cells": [
+    {
+      "battery_summary": {
+        "competence_accuracy": 0.9,
+        "n_competence": 40,
+        "n_dock_prompts": 600,
+        "out_path": "/vol/runs/20261104-155236-t11-base-qwen3_4b-R-d54d52/test_results_cell0.jsonl",
+        "variant": "R"
+      },
+      "cell": 0,
+      "fixed": {
+        "M1": "seld",
+        "M2": "zelk",
+        "cell": 0,
+        "dock_a": 3,
+        "dock_b": 6,
+        "reward_a": 1.0,
+        "reward_b": 0.6,
+        "run_index": 0,
+        "seed": 2000
+      },
+      "gpu": "A10G",
+      "gpu_name": "NVIDIA A10",
+      "gpu_seconds": 37.19312524795532,
+      "label_draw_tries": [
+        {
+          "accepted": true,
+          "attempt": 1,
+          "dock_a": 3,
+          "dock_b": 6,
+          "mean_control_p_dock_a": 0.5081905897629718
+        }
+      ],
+      "label_token_checks": [
+        {
+          "is_single": true,
+          "text": "2",
+          "token_ids": [
+            17
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "3",
+          "token_ids": [
+            18
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "4",
+          "token_ids": [
+            19
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "5",
+          "token_ids": [
+            20
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "6",
+          "token_ids": [
+            21
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "7",
+          "token_ids": [
+            22
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "8",
+          "token_ids": [
+            23
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "9",
+          "token_ids": [
+            24
+          ]
+        }
+      ],
+      "metrics": {
+        "DS": {
+          "DS_degrade_M1": 0.11785216066690218,
+          "DS_degrade_M1_setA": 0.20729604326452766,
+          "DS_degrade_M1_setB": -0.016313663229536313,
+          "DS_deval_M1": 0.5512788660945313,
+          "DS_deval_M1_setA": 0.502916690978678,
+          "DS_deval_M1_setB": 0.6238221287683108,
+          "DS_deval_M2": -0.12932212835674162,
+          "DS_deval_M2_setA": -0.14391974598198398,
+          "DS_deval_M2_setB": -0.10742570191887857,
+          "DS_sham": 0.05264519044493621,
+          "DS_sham_setA": 0.0849505672845241,
+          "DS_sham_setB": 0.004187125185553864,
+          "DS_spoil_M1": 0.7085416032261512,
+          "DS_spoil_M1_setA": 0.8063371405945993,
+          "DS_spoil_M1_setB": 0.5618482971734787
+        },
+        "competence_accuracy": 0.9,
+        "control_by_digit": {
+          "dock_a_higher": NaN,
+          "dock_a_lower": 0.8205294234814775
+        },
+        "control_by_mention_order": {
+          "dock_a_first": 0.9936303417637663,
+          "dock_a_second": 0.6253305156312368
+        },
+        "control_by_n": {
+          "n1_eq_n2": 0.8720879980141844,
+          "n1_gt_n2": 0.8435006905309161,
+          "n1_lt_n2": 0.7056716312351108
+        },
+        "control_entropy": 0.678917493750841,
+        "control_p_dock_a": 0.8205294234814775,
+        "efficacy": {
+          "p_no_deval_M1": 0.7524905726313591,
+          "p_no_deval_M2": 0.14691418334841727,
+          "p_yes_control_M1": 0.8991612285375595,
+          "p_yes_control_M2": 0.9244797140359878
+        },
+        "gate_pass": false,
+        "label_mass": 0.9999999929467837,
+        "label_mass_by_type": {
+          "control": 0.9999999904632568,
+          "degrade_M1": 0.9999999886751175,
+          "deval_M1": 0.9999999940395355,
+          "deval_M2": 0.9999999982118607,
+          "sham": 0.9999999910593033,
+          "spoil_M1": 0.9999999952316284
+        },
+        "label_mass_control": 0.9999999904632568,
+        "mapping_accuracy": 0.5375,
+        "p_useful_deval_M1": 0.7307494430724374,
+        "p_useful_deval_M1_setA": 0.6871076351346552,
+        "p_useful_deval_M1_setB": 0.7962121549791107,
+        "p_useful_deval_M2": 0.9498515518382191,
+        "p_useful_deval_M2_setA": 0.9597288040444255,
+        "p_useful_deval_M2_setB": 0.9350356735289097,
+        "sham_shift": 0.05264519044493621,
+        "useful_by_mention_order_setA": {
+          "deval_M1": {
+            "useful_first": 0.6016331469098406,
+            "useful_second": 0.761897812331368
+          },
+          "deval_M2": {
+            "useful_first": 1.0,
+            "useful_second": 0.9137045800951975
+          }
+        }
+      },
+      "model_key": "qwen3_4b",
+      "model_revision": "1cfa9a7208912126459214e8b04321603b3df60c",
+      "out_path": "/vol/runs/20261104-155236-t11-base-qwen3_4b-R-d54d52/test_results_cell0.jsonl",
+      "peak_gpu_mem_gb": 9.539913654327393,
+      "prefill": "Dock ",
+      "run_id": "20261104-155236-t11-base-qwen3_4b-R-d54d52",
+      "run_index": 0,
+      "variant": "R"
+    },
+    {
+      "battery_summary": {
+        "competence_accuracy": 0.9,
+        "n_competence": 40,
+        "n_dock_prompts": 600,
+        "out_path": "/vol/runs/20261104-155236-t11-base-qwen3_4b-R-d54d52/test_results_cell1.jsonl",
+        "variant": "R"
+      },
+      "cell": 1,
+      "fixed": {
+        "M1": "glim",
+        "M2": "quor",
+        "cell": 1,
+        "dock_a": 7,
+        "dock_b": 5,
+        "reward_a": 1.0,
+        "reward_b": 0.6,
+        "run_index": 1,
+        "seed": 2001
+      },
+      "gpu": "A10G",
+      "gpu_name": "NVIDIA A10",
+      "gpu_seconds": 48.5617151260376,
+      "label_draw_tries": [
+        {
+          "accepted": false,
+          "attempt": 1,
+          "dock_a": 5,
+          "dock_b": 3,
+          "mean_control_p_dock_a": 0.8753650838289104
+        },
+        {
+          "accepted": false,
+          "attempt": 2,
+          "dock_a": 9,
+          "dock_b": 2,
+          "mean_control_p_dock_a": 0.918195434557856
+        },
+        {
+          "accepted": false,
+          "attempt": 3,
+          "dock_a": 5,
+          "dock_b": 2,
+          "mean_control_p_dock_a": 0.9219004936826726
+        },
+        {
+          "accepted": false,
+          "attempt": 4,
+          "dock_a": 9,
+          "dock_b": 6,
+          "mean_control_p_dock_a": 0.8064717804595981
+        },
+        {
+          "accepted": true,
+          "attempt": 5,
+          "dock_a": 7,
+          "dock_b": 5,
+          "mean_control_p_dock_a": 0.7109452583009822
+        }
+      ],
+      "label_token_checks": [
+        {
+          "is_single": true,
+          "text": "2",
+          "token_ids": [
+            17
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "3",
+          "token_ids": [
+            18
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "4",
+          "token_ids": [
+            19
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "5",
+          "token_ids": [
+            20
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "6",
+          "token_ids": [
+            21
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "7",
+          "token_ids": [
+            22
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "8",
+          "token_ids": [
+            23
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "9",
+          "token_ids": [
+            24
+          ]
+        }
+      ],
+      "metrics": {
+        "DS": {
+          "DS_degrade_M1": 0.09377969480038839,
+          "DS_degrade_M1_setA": 0.11683927013791617,
+          "DS_degrade_M1_setB": 0.05919033179409683,
+          "DS_deval_M1": 0.38097904216164363,
+          "DS_deval_M1_setA": 0.20535381570036793,
+          "DS_deval_M1_setB": 0.6444168818535572,
+          "DS_deval_M2": -0.131907820094589,
+          "DS_deval_M2_setA": -0.14257462952284694,
+          "DS_deval_M2_setB": -0.11590760595220218,
+          "DS_sham": 0.05875784300926967,
+          "DS_sham_setA": 0.09230242219515694,
+          "DS_sham_setB": 0.00844097423043877,
+          "DS_spoil_M1": 0.6016635376066198,
+          "DS_spoil_M1_setA": 0.6452395406249416,
+          "DS_spoil_M1_setB": 0.5362995330791371
+        },
+        "competence_accuracy": 0.9,
+        "control_by_digit": {
+          "dock_a_higher": 0.7902711979233186,
+          "dock_a_lower": NaN
+        },
+        "control_by_mention_order": {
+          "dock_a_first": 0.9414856564956453,
+          "dock_a_second": 0.6197527659162267
+        },
+        "control_by_n": {
+          "n1_eq_n2": 0.8237807014416982,
+          "n1_gt_n2": 0.8791491955303956,
+          "n1_lt_n2": 0.6331408291182294
+        },
+        "control_entropy": 0.7409640351513693,
+        "control_p_dock_a": 0.7902711979233186,
+        "efficacy": {
+          "p_no_deval_M1": 0.1462056316435337,
+          "p_no_deval_M2": 0.0103776622141595,
+          "p_yes_control_M1": 0.9966462433338166,
+          "p_yes_control_M2": 0.9799931675195694
+        },
+        "gate_pass": false,
+        "label_mass": 0.9999999942382177,
+        "label_mass_by_type": {
+          "control": 0.9999999988079071,
+          "degrade_M1": 0.9999999916553497,
+          "deval_M1": 0.9999999976158143,
+          "deval_M2": 0.9999999904632568,
+          "sham": 0.9999999934434891,
+          "spoil_M1": 0.9999999934434891
+        },
+        "label_mass_control": 0.9999999988079071,
+        "mapping_accuracy": 0.525,
+        "p_useful_deval_M1": 0.5907078457152246,
+        "p_useful_deval_M1_setA": 0.4258777856820621,
+        "p_useful_deval_M1_setB": 0.8379529357649688,
+        "p_useful_deval_M2": 0.9221790180179076,
+        "p_useful_deval_M2_setA": 0.9220506616730485,
+        "p_useful_deval_M2_setB": 0.9223715525351963,
+        "sham_shift": 0.05875784300926967,
+        "useful_by_mention_order_setA": {
+          "deval_M1": {
+            "useful_first": 0.005600302722348399,
+            "useful_second": 0.7936205832718115
+          },
+          "deval_M2": {
+            "useful_first": 0.9999999925494194,
+            "useful_second": 0.8329657121000531
+          }
+        }
+      },
+      "model_key": "qwen3_4b",
+      "model_revision": "1cfa9a7208912126459214e8b04321603b3df60c",
+      "out_path": "/vol/runs/20261104-155236-t11-base-qwen3_4b-R-d54d52/test_results_cell1.jsonl",
+      "peak_gpu_mem_gb": 9.494567394256592,
+      "prefill": "Dock ",
+      "run_id": "20261104-155236-t11-base-qwen3_4b-R-d54d52",
+      "run_index": 1,
+      "variant": "R"
+    },
+    {
+      "battery_summary": {
+        "competence_accuracy": 0.9,
+        "n_competence": 40,
+        "n_dock_prompts": 600,
+        "out_path": "/vol/runs/20261104-155236-t11-base-qwen3_4b-R-d54d52/test_results_cell2.jsonl",
+        "variant": "R"
+      },
+      "cell": 2,
+      "fixed": {
+        "M1": "vexa",
+        "M2": "zinth",
+        "cell": 2,
+        "dock_a": 2,
+        "dock_b": 3,
+        "reward_a": 1.0,
+        "reward_b": 0.6,
+        "run_index": 2,
+        "seed": 2002
+      },
+      "gpu": "A10G",
+      "gpu_name": "NVIDIA A10",
+      "gpu_seconds": 80.10233879089355,
+      "label_draw_tries": [
+        {
+          "accepted": false,
+          "attempt": 1,
+          "dock_a": 8,
+          "dock_b": 9,
+          "mean_control_p_dock_a": 0.8610419765995175
+        },
+        {
+          "accepted": false,
+          "attempt": 2,
+          "dock_a": 3,
+          "dock_b": 4,
+          "mean_control_p_dock_a": 0.8252684931300943
+        },
+        {
+          "accepted": false,
+          "attempt": 3,
+          "dock_a": 2,
+          "dock_b": 6,
+          "mean_control_p_dock_a": 0.7593692940532009
+        },
+        {
+          "accepted": false,
+          "attempt": 4,
+          "dock_a": 3,
+          "dock_b": 4,
+          "mean_control_p_dock_a": 0.8252684931300943
+        },
+        {
+          "accepted": false,
+          "attempt": 5,
+          "dock_a": 3,
+          "dock_b": 9,
+          "mean_control_p_dock_a": 0.8806458590498853
+        },
+        {
+          "accepted": false,
+          "attempt": 6,
+          "dock_a": 4,
+          "dock_b": 6,
+          "mean_control_p_dock_a": 0.839018224119396
+        },
+        {
+          "accepted": false,
+          "attempt": 7,
+          "dock_a": 6,
+          "dock_b": 8,
+          "mean_control_p_dock_a": 0.8119417790572319
+        },
+        {
+          "accepted": false,
+          "attempt": 8,
+          "dock_a": 2,
+          "dock_b": 5,
+          "mean_control_p_dock_a": 0.7560757828610337
+        },
+        {
+          "accepted": false,
+          "attempt": 9,
+          "dock_a": 4,
+          "dock_b": 9,
+          "mean_control_p_dock_a": 0.8752347510578299
+        },
+        {
+          "accepted": false,
+          "attempt": 10,
+          "dock_a": 2,
+          "dock_b": 8,
+          "mean_control_p_dock_a": 0.8332312581203155
+        },
+        {
+          "accepted": false,
+          "attempt": 11,
+          "dock_a": 5,
+          "dock_b": 9,
+          "mean_control_p_dock_a": 0.8820845202014121
+        },
+        {
+          "accepted": false,
+          "attempt": 12,
+          "dock_a": 3,
+          "dock_b": 5,
+          "mean_control_p_dock_a": 0.8022704581723853
+        },
+        {
+          "accepted": false,
+          "attempt": 13,
+          "dock_a": 2,
+          "dock_b": 5,
+          "mean_control_p_dock_a": 0.7560757828610337
+        },
+        {
+          "accepted": false,
+          "attempt": 14,
+          "dock_a": 8,
+          "dock_b": 9,
+          "mean_control_p_dock_a": 0.8610419765995175
+        },
+        {
+          "accepted": false,
+          "attempt": 15,
+          "dock_a": 8,
+          "dock_b": 9,
+          "mean_control_p_dock_a": 0.8610419765995175
+        },
+        {
+          "accepted": false,
+          "attempt": 16,
+          "dock_a": 3,
+          "dock_b": 9,
+          "mean_control_p_dock_a": 0.8806458590498853
+        },
+        {
+          "accepted": true,
+          "attempt": 17,
+          "dock_a": 2,
+          "dock_b": 3,
+          "mean_control_p_dock_a": 0.6425184739190409
+        }
+      ],
+      "label_token_checks": [
+        {
+          "is_single": true,
+          "text": "2",
+          "token_ids": [
+            17
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "3",
+          "token_ids": [
+            18
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "4",
+          "token_ids": [
+            19
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "5",
+          "token_ids": [
+            20
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "6",
+          "token_ids": [
+            21
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "7",
+          "token_ids": [
+            22
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "8",
+          "token_ids": [
+            23
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "9",
+          "token_ids": [
+            24
+          ]
+        }
+      ],
+      "metrics": {
+        "DS": {
+          "DS_degrade_M1": 0.2910383904827305,
+          "DS_degrade_M1_setA": 0.38622446940348143,
+          "DS_degrade_M1_setB": 0.14825927210160428,
+          "DS_deval_M1": 0.6564243196536073,
+          "DS_deval_M1_setA": 0.6102201237461977,
+          "DS_deval_M1_setB": 0.725730613514722,
+          "DS_deval_M2": -0.13903649211585478,
+          "DS_deval_M2_setA": -0.13457218033320872,
+          "DS_deval_M2_setB": -0.1457329597898237,
+          "DS_sham": 0.23894928173756413,
+          "DS_sham_setA": 0.2172011327073683,
+          "DS_sham_setB": 0.2715715052828579,
+          "DS_spoil_M1": 0.8331782797039207,
+          "DS_spoil_M1_setA": 0.8554126805240478,
+          "DS_spoil_M1_setB": 0.7998266784737301
+        },
+        "competence_accuracy": 0.9,
+        "control_by_digit": {
+          "dock_a_higher": NaN,
+          "dock_a_lower": 0.8427566858484274
+        },
+        "control_by_mention_order": {
+          "dock_a_first": 0.9396680033730589,
+          "dock_a_second": 0.7334737107674603
+        },
+        "control_by_n": {
+          "n1_eq_n2": 0.9249100323726098,
+          "n1_gt_n2": 0.8850375075874486,
+          "n1_lt_n2": 0.6534088233861267
+        },
+        "control_entropy": 0.6276737088885254,
+        "control_p_dock_a": 0.8427566858484274,
+        "efficacy": {
+          "p_no_deval_M1": 0.5472525272518396,
+          "p_no_deval_M2": 0.2289889524690807,
+          "p_yes_control_M1": 0.921414452791214,
+          "p_yes_control_M2": 0.8938476040959358
+        },
+        "gate_pass": false,
+        "label_mass": 0.9999999931454658,
+        "label_mass_by_type": {
+          "control": 0.9999999922513961,
+          "degrade_M1": 0.9999999916553497,
+          "deval_M1": 0.9999999976158143,
+          "deval_M2": 0.9999999940395355,
+          "sham": 0.9999999880790711,
+          "spoil_M1": 0.9999999952316284
+        },
+        "label_mass_control": 0.9999999922513961,
+        "mapping_accuracy": 0.525,
+        "p_useful_deval_M1": 0.8136676397894714,
+        "p_useful_deval_M1_setA": 0.7548072640199249,
+        "p_useful_deval_M1_setB": 0.9019582034437917,
+        "p_useful_deval_M2": 0.9817931779642822,
+        "p_useful_deval_M2_setA": 0.9899850433071454,
+        "p_useful_deval_M2_setB": 0.9695053799499874,
+        "sham_shift": 0.23894928173756413,
+        "useful_by_mention_order_setA": {
+          "deval_M1": {
+            "useful_first": 0.5281610141385952,
+            "useful_second": 0.9531227326660883
+          },
+          "deval_M2": {
+            "useful_first": 1.0,
+            "useful_second": 0.9785393785153117
+          }
+        }
+      },
+      "model_key": "qwen3_4b",
+      "model_revision": "1cfa9a7208912126459214e8b04321603b3df60c",
+      "out_path": "/vol/runs/20261104-155236-t11-base-qwen3_4b-R-d54d52/test_results_cell2.jsonl",
+      "peak_gpu_mem_gb": 9.495116710662842,
+      "prefill": "Dock ",
+      "run_id": "20261104-155236-t11-base-qwen3_4b-R-d54d52",
+      "run_index": 2,
+      "variant": "R"
+    },
+    {
+      "battery_summary": {
+        "competence_accuracy": 0.9,
+        "n_competence": 40,
+        "n_dock_prompts": 600,
+        "out_path": "/vol/runs/20261104-155236-t11-base-qwen3_4b-R-d54d52/test_results_cell3.jsonl",
+        "variant": "R"
+      },
+      "cell": 3,
+      "fixed": {
+        "M1": "mip",
+        "M2": "jorb",
+        "cell": 3,
+        "dock_a": 8,
+        "dock_b": 6,
+        "reward_a": 1.0,
+        "reward_b": 0.6,
+        "run_index": 3,
+        "seed": 2003
+      },
+      "gpu": "A10G",
+      "gpu_name": "NVIDIA A10",
+      "gpu_seconds": 37.8192183971405,
+      "label_draw_tries": [
+        {
+          "accepted": true,
+          "attempt": 1,
+          "dock_a": 8,
+          "dock_b": 6,
+          "mean_control_p_dock_a": 0.5112945774217894
+        }
+      ],
+      "label_token_checks": [
+        {
+          "is_single": true,
+          "text": "2",
+          "token_ids": [
+            17
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "3",
+          "token_ids": [
+            18
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "4",
+          "token_ids": [
+            19
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "5",
+          "token_ids": [
+            20
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "6",
+          "token_ids": [
+            21
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "7",
+          "token_ids": [
+            22
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "8",
+          "token_ids": [
+            23
+          ]
+        },
+        {
+          "is_single": true,
+          "text": "9",
+          "token_ids": [
+            24
+          ]
+        }
+      ],
+      "metrics": {
+        "DS": {
+          "DS_degrade_M1": 0.09509010672428797,
+          "DS_degrade_M1_setA": 0.10472463193086223,
+          "DS_degrade_M1_setB": 0.0806383189144263,
+          "DS_deval_M1": 0.3985839098412588,
+          "DS_deval_M1_setA": 0.2774623584598212,
+          "DS_deval_M1_setB": 0.5802662369134151,
+          "DS_deval_M2": -0.14761042537377667,
+          "DS_deval_M2_setA": -0.18684477654359266,
+          "DS_deval_M2_setB": -0.08875889861905295,
+          "DS_sham": 0.04345080272258095,
+          "DS_sham_setA": 0.021236516588415077,
+          "DS_sham_setB": 0.07677223192382954,
+          "DS_spoil_M1": 0.57179513915555,
+          "DS_spoil_M1_setA": 0.5773734828817341,
+          "DS_spoil_M1_setB": 0.563427623566274
+        },
+        "competence_accuracy": 0.9,
+        "control_by_digit": {
+          "dock_a_higher": 0.8252137819470327,
+          "dock_a_lower": NaN
+        },
+        "control_by_mention_order": {
+          "dock_a_first": 0.9986938170666965,
+          "dock_a_second": 0.6295873593652839
+        },
+        "control_by_n": {
+          "n1_eq_n2": 0.7835005681976731,
+          "n1_gt_n2": 0.9303692768594845,
+          "n1_lt_n2": 0.7801209075724199
+        },
+        "control_entropy": 0.6685373680414353,
+        "control_p_dock_a": 0.8252137819470327,
+        "efficacy": {
+          "p_no_deval_M1": 0.19785245694220066,
+          "p_no_deval_M2": 0.05914200134575367,
+          "p_yes_control_M1": 0.9975591868162155,
+          "p_yes_control_M2": 0.9948258757591247
+        },
+        "gate_pass": false,
+        "label_mass": 0.9999999932448069,
+        "label_mass_by_type": {
+          "control": 0.9999999928474427,
+          "degrade_M1": 0.9999999910593033,
+          "deval_M1": 0.9999999922513961,
+          "deval_M2": 0.9999999952316284,
+          "sham": 0.9999999952316284,
+          "spoil_M1": 0.9999999928474427
+        },
+        "label_mass_control": 0.9999999928474427,
+        "mapping_accuracy": 0.6875,
+        "p_useful_deval_M1": 0.5733701276916754,
+        "p_useful_deval_M1_setA": 0.5094750248186266,
+        "p_useful_deval_M1_setB": 0.6692127820012488,
+        "p_useful_deval_M2": 0.9728242073208093,
+        "p_useful_deval_M2_setA": 0.954832108442982,
+        "p_useful_deval_M2_setB": 0.9998123556375503,
+        "sham_shift": 0.04345080272258095,
+        "useful_by_mention_order_setA": {
+          "deval_M1": {
+            "useful_first": 0.06852858194480439,
+            "useful_second": 0.8953031623332208
+          },
+          "deval_M2": {
+            "useful_first": 0.9999997168779373,
+            "useful_second": 0.9032119845173189
+          }
+        }
+      },
+      "model_key": "qwen3_4b",
+      "model_revision": "1cfa9a7208912126459214e8b04321603b3df60c",
+      "out_path": "/vol/runs/20261104-155236-t11-base-qwen3_4b-R-d54d52/test_results_cell3.jsonl",
+      "peak_gpu_mem_gb": 9.439600467681885,
+      "prefill": "Dock ",
+      "run_id": "20261104-155236-t11-base-qwen3_4b-R-d54d52",
+      "run_index": 3,
+      "variant": "R"
+    }
+  ],
+  "ended_utc": "2026-11-04T15:53:58Z",
+  "git_commit": "52dc083cd915ae9ad4b8f94489c30c29106902be",
+  "git_dirty": false,
+  "gpu_type": "L4",
+  "kind": "baseline_inference_t1_1",
+  "model_key": "qwen3_4b",
+  "variant": "R"
+}

@@ -1,0 +1,5 @@
+{"accepted": false, "attempt": 1, "dock_a": 5, "dock_b": 3, "mean_control_p_dock_a": 0.8753650838289104}
+{"accepted": false, "attempt": 2, "dock_a": 9, "dock_b": 2, "mean_control_p_dock_a": 0.918195434557856}
+{"accepted": false, "attempt": 3, "dock_a": 5, "dock_b": 2, "mean_control_p_dock_a": 0.9219004936826726}
+{"accepted": false, "attempt": 4, "dock_a": 9, "dock_b": 6, "mean_control_p_dock_a": 0.8064717804595981}
+{"accepted": true, "attempt": 5, "dock_a": 7, "dock_b": 5, "mean_control_p_dock_a": 0.7109452583009822}
