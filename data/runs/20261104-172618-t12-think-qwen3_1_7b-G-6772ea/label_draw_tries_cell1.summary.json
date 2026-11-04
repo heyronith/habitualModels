@@ -1,0 +1,22 @@
+{
+  "fixed": {
+    "M1": "qorl",
+    "M2": "zinth",
+    "cell": 1,
+    "dock_a": 7,
+    "dock_b": 3,
+    "reward_a": 1.0,
+    "reward_b": 0.6,
+    "run_index": 1,
+    "seed": 6001
+  },
+  "tries": [
+    {
+      "accepted": true,
+      "attempt": 1,
+      "dock_a": 7,
+      "dock_b": 3,
+      "mean_control_p_dock_a": 0.6857143861152145
+    }
+  ]
+}

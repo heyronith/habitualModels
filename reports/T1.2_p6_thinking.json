@@ -1,0 +1,54 @@
+{
+  "cost_projection": {
+    "note": "100% of observed traces hit the 256-token hard cap",
+    "seconds_per_trace_observed": 8.457599291464156,
+    "traces_per_config_full": 960,
+    "usd_full_p6_1_7b_only_4_configs": 9.938017471442041,
+    "usd_per_config_A10G": 2.4845043678605103
+  },
+  "phase": "p6",
+  "runs": [
+    {
+      "cell": 0,
+      "mean_gen_seconds": 7.284315293397361,
+      "mean_reasoning_tokens": 256.0,
+      "n_dock_complete": 61,
+      "n_dock_expected": 120,
+      "n_traces": 246,
+      "pct_hit_cap": 1.0,
+      "run_id": "20261104-172618-t12-think-qwen3_1_7b-G-6772ea",
+      "types_progress": {
+        "control": 120,
+        "deval_M1": 120,
+        "deval_M2": 6,
+        "sham": 0
+      }
+    },
+    {
+      "cell": 1,
+      "mean_gen_seconds": 9.630883289530953,
+      "mean_reasoning_tokens": 255.92513368983958,
+      "n_dock_complete": 46,
+      "n_dock_expected": 120,
+      "n_traces": 187,
+      "pct_hit_cap": 0.9946524064171123,
+      "run_id": "20261104-172618-t12-think-qwen3_1_7b-G-6772ea",
+      "types_progress": {
+        "control": 120,
+        "deval_M1": 67,
+        "deval_M2": 0,
+        "sham": 0
+      }
+    }
+  ],
+  "spend": {
+    "cost_usd": 1.1728674000000001,
+    "gpu": "A10G",
+    "gpu_seconds": 3832.9,
+    "note": "T1.2 P6 aborted partial 1.7B-G",
+    "run_id": "20261104-172618-t12-think-qwen3_1_7b-G-6772ea",
+    "ts": "2026-11-04T17:58:40Z",
+    "usd_per_second": 0.000306
+  },
+  "status": "aborted_over_budget"
+}

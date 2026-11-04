@@ -8,3 +8,4 @@
 {"run_id": "20261104-171835-t12-base-qwen3_14b-R-54fdc3", "cost_usd": 0.14259343665170668, "phase": "p3"}
 {"run_id": "20261104-171952-t12-cost-qwen3_8b-6b5d3b", "cost_usd": 0.09385992590141295, "phase": "p5"}
 {"run_id": "20261104-172302-t12-cost-qwen3_14b-6279f0", "cost_usd": 0.09414311704540251, "phase": "p5"}
+{"run_id": "20261104-172618-t12-think-qwen3_1_7b-G-6772ea", "cost_usd": 1.1728674000000001, "phase": "p6", "note": "aborted_partial"}
