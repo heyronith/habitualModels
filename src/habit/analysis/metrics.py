@@ -153,6 +153,7 @@ def summarize_battery(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "competence_accuracy": competence_acc,
         "control_entropy": binary_entropy(control_a) if control_a == control_a else float("nan"),
         "DS": ds,
+        "paired_DS_setA": paired_ds_rows(rows, set_name="A"),
         "gate_pass": gate_pass,
     }
 
@@ -175,3 +176,91 @@ def ds_by_run_checkpoint_set(rows: list[dict[str, Any]], ptype: str, set_name: s
 
 def delta_ds(ds_crit: float, ds_final: float) -> float:
     return float(ds_crit - ds_final)
+
+
+def _pair_key(r: dict[str, Any]) -> tuple:
+    return (r.get("template_id"), r.get("instance_id"), r.get("set"), r.get("variant"))
+
+
+def paired_ds_rows(
+    rows: list[dict[str, Any]],
+    *,
+    set_name: str | None = "A",
+) -> dict[str, Any]:
+    """Paired devaluation sensitivity on p(dock_a).
+
+    DS_M1 = mean[p_a(control) − p_a(deval_M1)]
+    DS_M2 = mean[p_a(deval_M2) − p_a(control)]
+    """
+    dock = [r for r in rows if r.get("kind") == "dock"]
+    if set_name is not None:
+        dock = [r for r in dock if r.get("set") == set_name]
+
+    by_type: dict[str, dict[tuple, dict]] = defaultdict(dict)
+    for r in dock:
+        by_type[r["type"]][_pair_key(r)] = r
+
+    def paired_deltas(ptype: str) -> list[dict[str, Any]]:
+        out = []
+        for key, ctrl in by_type.get("control", {}).items():
+            other = by_type.get(ptype, {}).get(key)
+            if other is None:
+                continue
+            # DS_M1 = p_a(control) − p_a(deval_M1); DS_M2 = p_a(deval_M2) − p_a(control)
+            if ptype == "deval_M1":
+                dval = float(ctrl["p_dock_a"]) - float(other["p_dock_a"])
+            else:
+                dval = float(other["p_dock_a"]) - float(ctrl["p_dock_a"])
+            out.append(
+                {
+                    "template_id": key[0],
+                    "instance_id": key[1],
+                    "set": key[2],
+                    "variant": key[3],
+                    "docks_order": ctrl.get("docks_order"),
+                    "dock_a": ctrl.get("dock_a"),
+                    "dock_b": ctrl.get("dock_b"),
+                    "p_a_control": float(ctrl["p_dock_a"]),
+                    "p_a_other": float(other["p_dock_a"]),
+                    "delta": dval,
+                    "dock_a_first": (ctrl.get("docks_order") or ["a"])[0] == "a",
+                    "dock_a_lower": (
+                        ctrl.get("dock_a") is not None
+                        and ctrl.get("dock_b") is not None
+                        and ctrl["dock_a"] < ctrl["dock_b"]
+                    ),
+                }
+            )
+        return out
+
+    d1 = paired_deltas("deval_M1")
+    d2 = paired_deltas("deval_M2")
+
+    def _split_mean(items: list[dict], pred) -> float:
+        return _mean([x["delta"] for x in items if pred(x)])
+
+    def summarize(items: list[dict], name: str) -> dict[str, Any]:
+        return {
+            "mean": _mean([x["delta"] for x in items]),
+            "n": len(items),
+            "by_template": {
+                tid: _mean([x["delta"] for x in items if x["template_id"] == tid])
+                for tid in sorted({x["template_id"] for x in items})
+            },
+            "by_mention_order": {
+                "dock_a_first": _split_mean(items, lambda x: x["dock_a_first"]),
+                "dock_a_second": _split_mean(items, lambda x: not x["dock_a_first"]),
+            },
+            "by_digit": {
+                "dock_a_lower": _split_mean(items, lambda x: x["dock_a_lower"]),
+                "dock_a_higher": _split_mean(items, lambda x: not x["dock_a_lower"]),
+            },
+            "name": name,
+        }
+
+    return {
+        "DS_M1": summarize(d1, "DS_M1"),
+        "DS_M2": summarize(d2, "DS_M2"),
+        "n_pairs_M1": len(d1),
+        "n_pairs_M2": len(d2),
+    }

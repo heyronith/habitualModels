@@ -18,9 +18,19 @@ projections:
   baseline_battery_gpu_seconds:
     qwen3_1_7b: 600   # 4 cells × full battery
     qwen3_4b: 1000
+    qwen3_8b: 1800
+    qwen3_14b: 3600
   smoke_update_gpu_seconds:
     qwen3_1_7b_lora_L4: 20
     qwen3_1_7b_last_mlp_L4: 25
     qwen3_1_7b_lora_A10G: 16
+    qwen3_8b_last_mlp_A10G: 40
+    qwen3_8b_last_mlp_L40S: 25
+    qwen3_14b_last_mlp_L40S: 45
+    qwen3_14b_last_mlp_A100-80GB: 35
   smoke_battery_gpu_seconds: 180
   smoke_sft_update_gpu_seconds: 18
+  # T1.2 task caps (Modal USD).
+  t1_2_cap_usd: 4.0
+  t1_2_p1_p5_cap_usd: 3.0
+  t1_2_p6_cap_usd: 1.0

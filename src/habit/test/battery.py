@@ -138,12 +138,66 @@ def generate_competence_items(cfg: dict[str, Any] | None = None) -> list[dict[st
     return items
 
 
+DOCK_REPLY_SENTENCE = "Reply with the dock number only."
+PROBE_REPLY_SENTENCE = "Answer the question briefly."
+
+
 def _append_probe_to_user(messages: list[dict[str, str]], question: str) -> list[dict[str, str]]:
-    """F4: append probe inside the same user message (no consecutive user turns)."""
+    """Legacy F4 append (kept for tests). Prefer ``render_probe_messages`` (T1.2 P1)."""
     out = [dict(m) for m in messages]
     assert out[-1]["role"] == "user"
     out[-1]["content"] = out[-1]["content"].rstrip() + "\n" + question
     return out
+
+
+def system_for_probe(system: str) -> str:
+    """Replace the dock-only reply constraint with a brief-answer instruction."""
+    if DOCK_REPLY_SENTENCE not in system:
+        raise ValueError(f"Expected dock-reply sentence in system prompt: {system!r}")
+    return system.replace(DOCK_REPLY_SENTENCE, PROBE_REPLY_SENTENCE)
+
+
+def replace_dock_question_with_probe(user: str, question: str) -> str:
+    """Replace the final dock-choice question line with the probe question.
+
+    All Set A/B templates end with a single line that asks which dock to use;
+    that line (containing 'dock') is replaced. State lines are unchanged.
+    """
+    lines = user.rstrip("\n").splitlines()
+    if not lines:
+        raise ValueError("Empty user message")
+    # Prefer the last non-empty line that mentions dock (the choice question).
+    idx = None
+    for i in range(len(lines) - 1, -1, -1):
+        if "dock" in lines[i].lower():
+            idx = i
+            break
+    if idx is None:
+        raise ValueError(f"No dock-question line found in user message: {user!r}")
+    lines[idx] = question.rstrip()
+    return "\n".join(lines)
+
+
+def render_probe_messages(messages: list[dict[str, str]], question: str) -> list[dict[str, str]]:
+    """T1.2 P1: probe uses modified system + state lines with dock question replaced.
+
+    The rendered probe must not contain the dock choice question nor
+    ``Reply with the dock number only.``
+    """
+    assert len(messages) >= 2
+    assert messages[0]["role"] == "system"
+    assert messages[-1]["role"] == "user"
+    system = system_for_probe(messages[0]["content"])
+    user = replace_dock_question_with_probe(messages[-1]["content"], question)
+    if DOCK_REPLY_SENTENCE in system:
+        raise RuntimeError("probe system still has dock-reply constraint")
+    if "Which dock should the cart go to?" in user:
+        raise RuntimeError("probe user still has A1 dock question")
+    # No consecutive user turns; single system + user.
+    return [
+        {"role": "system", "content": system},
+        {"role": "user", "content": user},
+    ]
 
 
 def run_battery(
@@ -216,7 +270,7 @@ def run_battery(
 
     def _ask_efficacy(base_item: dict, material: str) -> dict[str, float]:
         q = probes["efficacy"]["question"].format(material=material)
-        messages = _append_probe_to_user(base_item["messages"], q)
+        messages = render_probe_messages(base_item["messages"], q)
         return score_candidates(
             model,
             tokenizer,
@@ -224,7 +278,7 @@ def run_battery(
             probes["efficacy"]["candidates"],
             enable_thinking=enable_thinking,
             device=device,
-            prefill="",  # yes/no, not dock labels
+            prefill="",  # yes/no, not dock labels; no Dock prefill
         )
 
     # Pair efficacy: same (template, instance) control ↔ deval
@@ -307,7 +361,7 @@ def run_battery(
             (fixed.dock_b, fixed.M2),
         ]:
             q = probes["mapping"]["question"].format(dock=dock)
-            messages = _append_probe_to_user(it["messages"], q)
+            messages = render_probe_messages(it["messages"], q)
             pr = score_candidates(
                 model,
                 tokenizer,
@@ -376,6 +430,172 @@ def run_battery(
         "n_competence": len(comp_items),
         "competence_accuracy": correct / max(len(comp_items), 1),
         "variant": variant,
+        "out_path": str(out_path),
+    }
+    write_json(out_path.with_suffix(".summary.json"), summary)
+    return summary
+
+
+def run_probes_only(
+    model,
+    tokenizer,
+    fixed: RunFixed,
+    *,
+    run_id: str,
+    checkpoint: str,
+    out_path: Path,
+    device: str = "cpu",
+    enable_thinking: bool = False,
+    variant: str = "G",
+    cfg: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """T1.2 P1: efficacy + mapping probes only (fixed P1 rendering)."""
+    cfg = cfg or load_battery_cfg()
+    probes = load_probes()
+    items = generate_battery_items(fixed, cfg=cfg, variant=variant)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    if out_path.exists():
+        out_path.unlink()
+
+    controls = [it for it in items if it["type"] == "control"]
+    deval_m1 = [it for it in items if it["type"] == "deval_M1"]
+    deval_m2 = [it for it in items if it["type"] == "deval_M2"]
+    ctrl_by_key = {(c["template_id"], c["instance_id"]): c for c in controls}
+
+    def _ask_efficacy(base_item: dict, material: str) -> dict[str, float]:
+        q = probes["efficacy"]["question"].format(material=material)
+        messages = render_probe_messages(base_item["messages"], q)
+        return score_candidates(
+            model,
+            tokenizer,
+            messages,
+            probes["efficacy"]["candidates"],
+            enable_thinking=enable_thinking,
+            device=device,
+            prefill="",
+        )
+
+    n = 0
+    example_prompt = None
+    for it in deval_m1[:20]:
+        pr = _ask_efficacy(it, fixed.M1)
+        if example_prompt is None:
+            q = probes["efficacy"]["question"].format(material=fixed.M1)
+            example_prompt = render_probe_messages(it["messages"], q)
+        append_jsonl(
+            out_path,
+            {
+                "run_id": run_id,
+                "checkpoint": checkpoint,
+                "kind": "probe_efficacy",
+                "context_type": "deval_M1",
+                "material": "M1",
+                "p_yes": pr["yes"],
+                "p_no": pr["no"],
+                "template_id": it["template_id"],
+                "instance_id": it["instance_id"],
+                "variant": variant,
+            },
+        )
+        n += 1
+        ctrl = ctrl_by_key[(it["template_id"], it["instance_id"])]
+        pr = _ask_efficacy(ctrl, fixed.M1)
+        append_jsonl(
+            out_path,
+            {
+                "run_id": run_id,
+                "checkpoint": checkpoint,
+                "kind": "probe_efficacy",
+                "context_type": "control",
+                "material": "M1",
+                "p_yes": pr["yes"],
+                "p_no": pr["no"],
+                "template_id": it["template_id"],
+                "instance_id": it["instance_id"],
+                "variant": variant,
+            },
+        )
+        n += 1
+    for it in deval_m2[:20]:
+        pr = _ask_efficacy(it, fixed.M2)
+        append_jsonl(
+            out_path,
+            {
+                "run_id": run_id,
+                "checkpoint": checkpoint,
+                "kind": "probe_efficacy",
+                "context_type": "deval_M2",
+                "material": "M2",
+                "p_yes": pr["yes"],
+                "p_no": pr["no"],
+                "template_id": it["template_id"],
+                "instance_id": it["instance_id"],
+                "variant": variant,
+            },
+        )
+        n += 1
+        ctrl = ctrl_by_key[(it["template_id"], it["instance_id"])]
+        pr = _ask_efficacy(ctrl, fixed.M2)
+        append_jsonl(
+            out_path,
+            {
+                "run_id": run_id,
+                "checkpoint": checkpoint,
+                "kind": "probe_efficacy",
+                "context_type": "control",
+                "material": "M2",
+                "p_yes": pr["yes"],
+                "p_no": pr["no"],
+                "template_id": it["template_id"],
+                "instance_id": it["instance_id"],
+                "variant": variant,
+            },
+        )
+        n += 1
+
+    for it in controls[:40]:
+        for dock, material_name in [
+            (fixed.dock_a, fixed.M1),
+            (fixed.dock_b, fixed.M2),
+        ]:
+            q = probes["mapping"]["question"].format(dock=dock)
+            messages = render_probe_messages(it["messages"], q)
+            pr = score_candidates(
+                model,
+                tokenizer,
+                messages,
+                [fixed.M1, fixed.M2],
+                enable_thinking=enable_thinking,
+                device=device,
+                prefill="",
+            )
+            append_jsonl(
+                out_path,
+                {
+                    "run_id": run_id,
+                    "checkpoint": checkpoint,
+                    "kind": "probe_mapping",
+                    "dock": dock,
+                    "expected": material_name,
+                    "p_M1": pr[fixed.M1],
+                    "p_M2": pr[fixed.M2],
+                    "correct_p": pr[material_name],
+                    "template_id": it["template_id"],
+                    "instance_id": it["instance_id"],
+                    "variant": variant,
+                },
+            )
+            n += 1
+
+    from habit.analysis.metrics import load_jsonl, summarize_battery
+
+    metrics = summarize_battery(load_jsonl(out_path))
+    summary = {
+        "n_probe_rows": n,
+        "mapping_accuracy": metrics.get("mapping_accuracy"),
+        "efficacy": metrics.get("efficacy"),
+        "variant": variant,
+        "example_probe_messages": example_prompt,
         "out_path": str(out_path),
     }
     write_json(out_path.with_suffix(".summary.json"), summary)

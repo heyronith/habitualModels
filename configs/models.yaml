@@ -1,4 +1,4 @@
-# Pinned Hugging Face revisions (sha of model repo at first download for T1).
+# Pinned Hugging Face revisions (sha of model repo at first download).
 models:
   qwen3_1_7b:
     id: Qwen/Qwen3-1.7B
@@ -6,6 +6,12 @@ models:
   qwen3_4b:
     id: Qwen/Qwen3-4B
     revision: 1cfa9a7208912126459214e8b04321603b3df60c
+  qwen3_8b:
+    id: Qwen/Qwen3-8B
+    revision: b968826d9c46dd6066d109eabc6255188de91218
+  qwen3_14b:
+    id: Qwen/Qwen3-14B
+    revision: 40c069824f4251a91eefaf281ebe4c544efd3e18
 
 # Tiny local model for CPU tests (built on the fly; Qwen2-architecture random weights).
 tiny:

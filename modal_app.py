@@ -59,7 +59,32 @@ def _gpu_mem_peak_gb() -> float | None:
         return None
 
 
-@app.function(gpu=["L4", "A10G", "T4"], timeout=60 * 30, **_FUNCTION_KW)
+def _gpu_key_from_name(gpu_name: str) -> str:
+    if "H100" in gpu_name:
+        return "H100"
+    if "A100" in gpu_name and "80" in gpu_name:
+        return "A100-80GB"
+    if "A100" in gpu_name:
+        return "A100-40GB"
+    if "L40" in gpu_name:
+        return "L40S"
+    if "A10" in gpu_name:
+        return "A10G"
+    if "T4" in gpu_name:
+        return "T4"
+    return "L4"
+
+
+def _gpus_for_model(model_key: str) -> list[str]:
+    """Preferred Modal GPU pool by model size."""
+    if model_key == "qwen3_14b":
+        return ["L40S", "A100-80GB"]
+    if model_key == "qwen3_8b":
+        return ["A10G", "L40S", "A100-80GB"]
+    return ["L4", "A10G", "T4"]
+
+
+@app.function(gpu=["L4", "A10G", "L40S", "A100-80GB", "T4"], timeout=60 * 45, **_FUNCTION_KW)
 def template_check_qwen(model_key: str = "qwen3_1_7b") -> dict[str, Any]:
     """Render prompt + verify single-token labels on a pinned Qwen3 revision."""
     import sys
@@ -131,18 +156,12 @@ def template_check_qwen(model_key: str = "qwen3_1_7b") -> dict[str, Any]:
         "max_abs_diff": max_diff,
         "equal_atol_1e-5": max_diff < 1e-5,
         "fixed": fixed.to_dict(),
-        "gpu": (
-            "L40S"
-            if "L40" in (torch.cuda.get_device_name(0) if torch.cuda.is_available() else "")
-            else "A10G"
-            if "A10" in (torch.cuda.get_device_name(0) if torch.cuda.is_available() else "")
-            else "T4"
-            if "T4" in (torch.cuda.get_device_name(0) if torch.cuda.is_available() else "")
-            else "L4"
+        "gpu": _gpu_key_from_name(
+            torch.cuda.get_device_name(0) if torch.cuda.is_available() else "cpu"
         ),
         "gpu_seconds": time.time() - t0,
     }
-    out = Path(f"/vol/reports/T1.1_template_check_{model_key}.json")
+    out = Path(f"/vol/reports/T1.2_template_check_{model_key}.json")
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(result, indent=2) + "\n")
     vol.commit()
@@ -213,14 +232,11 @@ def baseline_battery_cell(
     metrics = summarize_battery(rows)
     spec = resolve_model_spec(model_key)
     gpu_name = torch.cuda.get_device_name(0) if torch.cuda.is_available() else "cpu"
-    if "L40" in gpu_name:
-        gpu_key = "L40S"
-    elif "A10" in gpu_name:
-        gpu_key = "A10G"
-    elif "T4" in gpu_name:
-        gpu_key = "T4"
-    else:
-        gpu_key = "L4"
+    gpu_key = _gpu_key_from_name(gpu_name)
+    # Attach paired DS for T1.2 reporting
+    from habit.analysis.metrics import paired_ds_rows
+
+    metrics["paired_DS_setA"] = paired_ds_rows(rows, set_name="A")
     result = {
         "run_id": run_id,
         "model_key": model_key,
@@ -245,6 +261,359 @@ def baseline_battery_cell(
     if bias_log.exists():
         result["artifact_label_draw_tries.jsonl"] = bias_log.read_text(encoding="utf-8")
     write_json(out_dir / f"cell{run_index}_summary.json", result)
+    vol.commit()
+    return result
+
+
+@app.function(
+    gpu=["A10G", "L40S", "L4"],
+    timeout=60 * 60 * 2,
+    image=image,
+    volumes={"/vol": vol},
+    secrets=secrets,
+    memory=65536,
+)
+def probes_only_cell(
+    model_key: str,
+    run_index: int,
+    seed: int,
+    run_id: str,
+    variant: str = "R",
+) -> dict[str, Any]:
+    """T1.2 P1: re-run fixed probes only (sanity mapping ≥ 0.95)."""
+    import sys
+
+    sys.path.insert(0, "/root/project/src")
+    import torch
+
+    from habit.analysis.metrics import load_jsonl, summarize_battery
+    from habit.env.bias_guard import draw_run_fixed_with_bias_guard
+    from habit.infra.logging import write_json
+    from habit.model.loading import load_model, resolve_model_spec
+    from habit.test.battery import run_probes_only
+
+    t0 = time.time()
+    if torch.cuda.is_available():
+        torch.cuda.reset_peak_memory_stats()
+    model, tokenizer = load_model(model_key, device="cuda", dtype=torch.bfloat16)
+    out_dir = Path(f"/vol/runs/{run_id}")
+    out_dir.mkdir(parents=True, exist_ok=True)
+    bias_log = out_dir / f"label_draw_tries_cell{run_index}.jsonl"
+    fixed, tries = draw_run_fixed_with_bias_guard(
+        model,
+        tokenizer,
+        run_index,
+        seed,
+        variant=variant,
+        device="cuda",
+        enable_thinking=False,
+        log_path=bias_log,
+    )
+    local_out = out_dir / f"probe_results_cell{run_index}.jsonl"
+    summary = run_probes_only(
+        model,
+        tokenizer,
+        fixed,
+        run_id=run_id,
+        checkpoint="C0",
+        out_path=local_out,
+        device="cuda",
+        enable_thinking=False,
+        variant=variant,
+    )
+    rows = load_jsonl(local_out)
+    metrics = summarize_battery(rows)
+    gpu_name = torch.cuda.get_device_name(0) if torch.cuda.is_available() else "cpu"
+    result = {
+        "run_id": run_id,
+        "model_key": model_key,
+        "model_revision": resolve_model_spec(model_key)["revision"],
+        "run_index": run_index,
+        "variant": variant,
+        "fixed": fixed.to_dict(),
+        "label_draw_tries": tries,
+        "probe_summary": summary,
+        "metrics": {
+            "mapping_accuracy": metrics.get("mapping_accuracy"),
+            "efficacy": metrics.get("efficacy"),
+        },
+        "gpu": _gpu_key_from_name(gpu_name),
+        "gpu_name": gpu_name,
+        "gpu_seconds": time.time() - t0,
+        "peak_gpu_mem_gb": _gpu_mem_peak_gb(),
+    }
+    if local_out.exists():
+        result["artifact_probe_results.jsonl"] = local_out.read_text(encoding="utf-8")
+    if bias_log.exists():
+        result["artifact_label_draw_tries.jsonl"] = bias_log.read_text(encoding="utf-8")
+    write_json(out_dir / f"probe_cell{run_index}_summary.json", result)
+    vol.commit()
+    return result
+
+
+@app.function(
+    gpu=["A10G", "L40S", "A100-80GB"],
+    timeout=60 * 60 * 4,
+    image=image,
+    volumes={"/vol": vol},
+    secrets=secrets,
+    memory=65536,
+)
+def baseline_battery_cell_large(
+    model_key: str,
+    run_index: int,
+    seed: int,
+    run_id: str,
+    variant: str = "G",
+) -> dict[str, Any]:
+    """Baseline cell for 8B/14B (larger GPU / RAM)."""
+    import sys
+
+    sys.path.insert(0, "/root/project/src")
+    import torch
+
+    from habit.analysis.metrics import load_jsonl, paired_ds_rows, summarize_battery
+    from habit.env.bias_guard import draw_run_fixed_with_bias_guard
+    from habit.infra.logging import write_json
+    from habit.model.chat import choose_prefill_for_labels, default_prefill
+    from habit.model.loading import load_model, resolve_model_spec
+    from habit.model.tokens import check_single_token
+    from habit.test.battery import run_battery
+
+    t0 = time.time()
+    if torch.cuda.is_available():
+        torch.cuda.reset_peak_memory_stats()
+    model, tokenizer = load_model(model_key, device="cuda", dtype=torch.bfloat16)
+    pref = choose_prefill_for_labels(tokenizer)
+    assert pref == default_prefill(), f"prefill mismatch: {pref!r} vs {default_prefill()!r}"
+    label_checks = [
+        {"text": c.text, "token_ids": c.token_ids, "is_single": c.is_single}
+        for c in check_single_token(tokenizer, [str(i) for i in range(2, 10)])
+    ]
+    assert all(c["is_single"] for c in label_checks)
+    out_dir = Path(f"/vol/runs/{run_id}")
+    out_dir.mkdir(parents=True, exist_ok=True)
+    bias_log = out_dir / f"label_draw_tries_cell{run_index}.jsonl"
+    fixed, tries = draw_run_fixed_with_bias_guard(
+        model,
+        tokenizer,
+        run_index,
+        seed,
+        variant=variant,
+        device="cuda",
+        enable_thinking=False,
+        log_path=bias_log,
+    )
+    local_out = out_dir / f"test_results_cell{run_index}.jsonl"
+    summary = run_battery(
+        model,
+        tokenizer,
+        fixed,
+        run_id=run_id,
+        checkpoint="C0",
+        out_path=local_out,
+        device="cuda",
+        enable_thinking=False,
+        variant=variant,
+    )
+    rows = load_jsonl(local_out)
+    metrics = summarize_battery(rows)
+    metrics["paired_DS_setA"] = paired_ds_rows(rows, set_name="A")
+    gpu_name = torch.cuda.get_device_name(0) if torch.cuda.is_available() else "cpu"
+    result = {
+        "run_id": run_id,
+        "model_key": model_key,
+        "model_revision": resolve_model_spec(model_key)["revision"],
+        "run_index": run_index,
+        "variant": variant,
+        "cell": fixed.cell,
+        "fixed": fixed.to_dict(),
+        "prefill": pref,
+        "label_token_checks": label_checks,
+        "label_draw_tries": tries,
+        "battery_summary": summary,
+        "metrics": metrics,
+        "gpu": _gpu_key_from_name(gpu_name),
+        "gpu_name": gpu_name,
+        "gpu_seconds": time.time() - t0,
+        "peak_gpu_mem_gb": _gpu_mem_peak_gb(),
+        "out_path": str(local_out),
+    }
+    if local_out.exists():
+        result["artifact_test_results.jsonl"] = local_out.read_text(encoding="utf-8")
+    if bias_log.exists():
+        result["artifact_label_draw_tries.jsonl"] = bias_log.read_text(encoding="utf-8")
+    write_json(out_dir / f"cell{run_index}_summary.json", result)
+    vol.commit()
+    return result
+
+
+@app.function(
+    gpu=["A10G", "L40S", "A100-80GB"],
+    timeout=60 * 60 * 2,
+    image=image,
+    volumes={"/vol": vol},
+    secrets=secrets,
+    memory=65536,
+)
+def cost_smoke_rl(
+    model_key: str,
+    seed: int,
+    run_index: int,
+    run_id: str,
+    max_updates: int = 10,
+    trainable_mode: str = "last_mlp",
+    variant: str = "R",
+) -> dict[str, Any]:
+    """T1.2 P5: 10-update last_mlp RL cost smoke (variant R, cell 0)."""
+    import sys
+
+    sys.path.insert(0, "/root/project/src")
+    import torch
+    import yaml
+
+    from habit.infra.logging import write_json
+    from habit.model.loading import load_model, resolve_model_spec
+    from habit.train.rl import train_rl
+
+    t0 = time.time()
+    if torch.cuda.is_available():
+        torch.cuda.reset_peak_memory_stats()
+    cfg = yaml.safe_load(Path("/root/project/configs/train/smoke.yaml").read_text())
+    cfg = {
+        **cfg,
+        "trainable_mode": trainable_mode,
+        "seed": seed,
+        "run_index": run_index,
+        "max_updates": max_updates,
+        "force_checkpoints": [max_updates],
+        "name": f"t12-cost-{trainable_mode}",
+        "variant": variant,
+        "enable_thinking": False,
+    }
+    model, tokenizer = load_model(model_key, device="cuda", dtype=torch.bfloat16)
+    gpu_name = torch.cuda.get_device_name(0) if torch.cuda.is_available() else "cpu"
+    gpu_key = _gpu_key_from_name(gpu_name)
+    out_dir = Path(f"/vol/runs/{run_id}")
+    summary = train_rl(
+        model,
+        tokenizer,
+        cfg,
+        out_dir,
+        device="cuda",
+        model_key=model_key,
+        gpu_type=gpu_key,
+    )
+    gpu_seconds = time.time() - t0
+    per_update = gpu_seconds / max(max_updates, 1)
+    result = {
+        "run_id": run_id,
+        "model_key": model_key,
+        "model_revision": resolve_model_spec(model_key)["revision"],
+        "trainable_mode": trainable_mode,
+        "variant": variant,
+        "max_updates": max_updates,
+        "summary": summary,
+        "gpu": gpu_key,
+        "gpu_name": gpu_name,
+        "gpu_seconds": gpu_seconds,
+        "seconds_per_update": per_update,
+        "peak_gpu_mem_gb": _gpu_mem_peak_gb(),
+    }
+    for name in ["actions.jsonl", "metrics.jsonl", "config.json", "run_fixed.json", "train_summary.json", "checkpoint_manifest.json"]:
+        p = out_dir / name
+        if p.exists():
+            result[f"artifact_{name}"] = p.read_text(encoding="utf-8")
+    write_json(out_dir / "modal_result.json", result)
+    vol.commit()
+    return result
+
+
+@app.function(
+    gpu=["A10G", "L40S", "L4"],
+    timeout=60 * 60 * 4,
+    image=image,
+    volumes={"/vol": vol},
+    secrets=secrets,
+    memory=65536,
+)
+def thinking_battery_cell(
+    model_key: str,
+    run_index: int,
+    seed: int,
+    run_id: str,
+    variant: str = "G",
+    k_traces: int = 4,
+    n_instances: int = 10,
+) -> dict[str, Any]:
+    """T1.2 P6: reasoning-enabled Set A baseline (cells 0–1)."""
+    import sys
+
+    sys.path.insert(0, "/root/project/src")
+    import torch
+
+    from habit.analysis.metrics import load_jsonl, paired_ds_rows, summarize_battery
+    from habit.env.bias_guard import draw_run_fixed_with_bias_guard
+    from habit.infra.logging import write_json
+    from habit.model.loading import load_model, resolve_model_spec
+    from habit.test.thinking_battery import run_thinking_battery
+
+    t0 = time.time()
+    if torch.cuda.is_available():
+        torch.cuda.reset_peak_memory_stats()
+    model, tokenizer = load_model(model_key, device="cuda", dtype=torch.bfloat16)
+    out_dir = Path(f"/vol/runs/{run_id}")
+    out_dir.mkdir(parents=True, exist_ok=True)
+    bias_log = out_dir / f"label_draw_tries_cell{run_index}.jsonl"
+    fixed, tries = draw_run_fixed_with_bias_guard(
+        model,
+        tokenizer,
+        run_index,
+        seed,
+        variant=variant,
+        device="cuda",
+        enable_thinking=False,  # bias guard stays non-thinking / Dock-prefill
+        log_path=bias_log,
+    )
+    local_out = out_dir / f"thinking_results_cell{run_index}.jsonl"
+    summary = run_thinking_battery(
+        model,
+        tokenizer,
+        fixed,
+        run_id=run_id,
+        checkpoint="C0_think",
+        out_path=local_out,
+        device="cuda",
+        variant=variant,
+        k_traces=k_traces,
+        n_instances=n_instances,
+        seed=seed,
+    )
+    rows = load_jsonl(local_out)
+    dock_rows = [r for r in rows if r.get("kind") == "dock"]
+    metrics = summarize_battery(dock_rows)
+    metrics["paired_DS_setA"] = paired_ds_rows(dock_rows, set_name="A")
+    gpu_name = torch.cuda.get_device_name(0) if torch.cuda.is_available() else "cpu"
+    result = {
+        "run_id": run_id,
+        "model_key": model_key,
+        "model_revision": resolve_model_spec(model_key)["revision"],
+        "run_index": run_index,
+        "variant": variant,
+        "fixed": fixed.to_dict(),
+        "label_draw_tries": tries,
+        "thinking_summary": summary,
+        "metrics": metrics,
+        "gpu": _gpu_key_from_name(gpu_name),
+        "gpu_name": gpu_name,
+        "gpu_seconds": time.time() - t0,
+        "peak_gpu_mem_gb": _gpu_mem_peak_gb(),
+    }
+    if local_out.exists():
+        result["artifact_thinking_results.jsonl"] = local_out.read_text(encoding="utf-8")
+    if bias_log.exists():
+        result["artifact_label_draw_tries.jsonl"] = bias_log.read_text(encoding="utf-8")
+    write_json(out_dir / f"thinking_cell{run_index}_summary.json", result)
     vol.commit()
     return result
 

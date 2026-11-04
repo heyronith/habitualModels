@@ -1,0 +1,82 @@
+{
+  "20261104-154717-t11-base-qwen3_1_7b-G-61c0d0": {
+    "model": 0.55,
+    "gate_pass": false,
+    "p_useful_M1_A": 0.5020033974626821,
+    "p_useful_M2_A": 0.7888809016710262,
+    "paired_DS_M1": 0.07193169903567416,
+    "paired_DS_M2": 0.029423316049273278,
+    "paired_DS_M1_by_template": {
+      "A1": 0.14416692293783057,
+      "A2": 0.059973718132823706,
+      "A3": 0.011654456036368189
+    },
+    "paired_DS_M1_by_mention": {
+      "dock_a_first": 0.14589726629244026,
+      "dock_a_second": -0.012600377829201394
+    },
+    "mapping_accuracy": 0.55,
+    "sham_shift": 0.09256883615213529,
+    "label_mass_control": 0.9999997249245643
+  },
+  "20261104-154908-t11-base-qwen3_1_7b-R-6de6d3": {
+    "model": 0.5125,
+    "gate_pass": false,
+    "p_useful_M1_A": 0.6259637031704249,
+    "p_useful_M2_A": 0.7575567740800854,
+    "paired_DS_M1": 0.331932792360843,
+    "paired_DS_M2": -0.053125318944526614,
+    "paired_DS_M1_by_template": {
+      "A1": 0.6394099233701811,
+      "A2": 0.16546937158518632,
+      "A3": 0.1909190821271615
+    },
+    "paired_DS_M1_by_mention": {
+      "dock_a_first": 0.5195490056751029,
+      "dock_a_second": 0.11751426285883174
+    },
+    "mapping_accuracy": 0.5125,
+    "sham_shift": 0.10385207280780373,
+    "label_mass_control": 0.9999999915063381
+  },
+  "20261104-155018-t11-base-qwen3_4b-G-3ac033": {
+    "model": 0.528125,
+    "gate_pass": false,
+    "p_useful_M1_A": 0.45149501521618346,
+    "p_useful_M2_A": 0.9018049758969151,
+    "paired_DS_M1": 0.1977908209711853,
+    "paired_DS_M2": 0.07721865036134469,
+    "paired_DS_M1_by_template": {
+      "A1": 0.514414691310726,
+      "A2": 0.02499779844637775,
+      "A3": 0.05395997315645218
+    },
+    "paired_DS_M1_by_mention": {
+      "dock_a_first": 0.3618422793106457,
+      "dock_a_second": 0.010303440011801992
+    },
+    "mapping_accuracy": 0.528125,
+    "sham_shift": 0.007323719316918442,
+    "label_mass_control": 0.999999991953373
+  },
+  "20261104-155236-t11-base-qwen3_4b-R-d54d52": {
+    "model": 0.56875,
+    "gate_pass": false,
+    "p_useful_M1_A": 0.5943169274138171,
+    "p_useful_M2_A": 0.9566491543669003,
+    "paired_DS_M1": 0.2774623584598211,
+    "paired_DS_M2": 0.18684477654359272,
+    "paired_DS_M1_by_template": {
+      "A1": 0.3393942181935393,
+      "A2": -0.054646169817806366,
+      "A3": 0.5476390270037305
+    },
+    "paired_DS_M1_by_mention": {
+      "dock_a_first": 0.8938212201273891,
+      "dock_a_second": -0.42694776916025656
+    },
+    "mapping_accuracy": 0.56875,
+    "sham_shift": 0.09845077947858782,
+    "label_mass_control": 0.9999999935925007
+  }
+}

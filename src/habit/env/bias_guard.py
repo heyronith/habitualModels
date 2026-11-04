@@ -21,6 +21,9 @@ def _starting_bias_cfg() -> dict[str, Any]:
     return yaml.safe_load((CONFIGS / "env.yaml").read_text())["starting_bias"]
 
 
+_SET_A_TEMPLATES = ("A1", "A2", "A3")
+
+
 def mean_control_p_dock_a(
     model,
     tokenizer,
@@ -32,7 +35,7 @@ def mean_control_p_dock_a(
     enable_thinking: bool = False,
     device: str = "cpu",
 ) -> float:
-    """Mean control p(dock_a) on Set A states (A1), with Dock prefill."""
+    """Mean control p(dock_a) on Set A states (uniform A1–A3 mix), with Dock prefill."""
     import torch
 
     states = generate_states(fixed, n_states, seed, training=True)
@@ -41,9 +44,9 @@ def mean_control_p_dock_a(
     ps = []
     model.eval()
     with torch.no_grad():
-        for st in states:
-            # Uniform over A1–A3 would also be fine; A1 is the canonical bias probe surface.
-            rp = render_prompt(st, "A1", prompt_type="control", variant=variant)
+        for i, st in enumerate(states):
+            tid = _SET_A_TEMPLATES[i % len(_SET_A_TEMPLATES)]
+            rp = render_prompt(st, tid, prompt_type="control", variant=variant)
             prompt = render_chat(tokenizer, rp.messages(), enable_thinking=enable_thinking)
             enc = tokenize_prompt(tokenizer, prompt, device=device)
             logits = model(input_ids=enc["input_ids"], attention_mask=enc.get("attention_mask")).logits[:, -1, :][0]
