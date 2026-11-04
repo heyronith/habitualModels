@@ -1,0 +1,342 @@
+{
+  "battery_summary": {
+    "competence_accuracy": 0.95,
+    "n_competence": 40,
+    "n_dock_prompts": 600,
+    "out_path": "/vol/runs/20261104-171601-t12-base-qwen3_8b-R-f1e690/test_results_cell0.jsonl",
+    "variant": "R"
+  },
+  "cell": 0,
+  "fixed": {
+    "M1": "qorl",
+    "M2": "plon",
+    "cell": 0,
+    "dock_a": 4,
+    "dock_b": 8,
+    "reward_a": 1.0,
+    "reward_b": 0.6,
+    "run_index": 0,
+    "seed": 4000
+  },
+  "gpu": "A100-80GB",
+  "gpu_name": "NVIDIA A100 80GB PCIe",
+  "gpu_seconds": 79.99905920028687,
+  "label_draw_tries": [
+    {
+      "accepted": false,
+      "attempt": 1,
+      "dock_a": 8,
+      "dock_b": 9,
+      "mean_control_p_dock_a": 0.9407871065524887
+    },
+    {
+      "accepted": false,
+      "attempt": 2,
+      "dock_a": 8,
+      "dock_b": 9,
+      "mean_control_p_dock_a": 0.9407871065524887
+    },
+    {
+      "accepted": false,
+      "attempt": 3,
+      "dock_a": 3,
+      "dock_b": 8,
+      "mean_control_p_dock_a": 0.8673553383647952
+    },
+    {
+      "accepted": false,
+      "attempt": 4,
+      "dock_a": 5,
+      "dock_b": 9,
+      "mean_control_p_dock_a": 0.9071655549553933
+    },
+    {
+      "accepted": false,
+      "attempt": 5,
+      "dock_a": 2,
+      "dock_b": 5,
+      "mean_control_p_dock_a": 0.8406723863654709
+    },
+    {
+      "accepted": false,
+      "attempt": 6,
+      "dock_a": 2,
+      "dock_b": 5,
+      "mean_control_p_dock_a": 0.8406723863654709
+    },
+    {
+      "accepted": false,
+      "attempt": 7,
+      "dock_a": 2,
+      "dock_b": 5,
+      "mean_control_p_dock_a": 0.8406723863654709
+    },
+    {
+      "accepted": false,
+      "attempt": 8,
+      "dock_a": 4,
+      "dock_b": 5,
+      "mean_control_p_dock_a": 0.9384015984008997
+    },
+    {
+      "accepted": false,
+      "attempt": 9,
+      "dock_a": 6,
+      "dock_b": 7,
+      "mean_control_p_dock_a": 0.9394314723053488
+    },
+    {
+      "accepted": false,
+      "attempt": 10,
+      "dock_a": 5,
+      "dock_b": 7,
+      "mean_control_p_dock_a": 0.9277509995925357
+    },
+    {
+      "accepted": false,
+      "attempt": 11,
+      "dock_a": 2,
+      "dock_b": 9,
+      "mean_control_p_dock_a": 0.8252018161858662
+    },
+    {
+      "accepted": false,
+      "attempt": 12,
+      "dock_a": 2,
+      "dock_b": 5,
+      "mean_control_p_dock_a": 0.8406723863654709
+    },
+    {
+      "accepted": false,
+      "attempt": 13,
+      "dock_a": 2,
+      "dock_b": 8,
+      "mean_control_p_dock_a": 0.8438603663087026
+    },
+    {
+      "accepted": false,
+      "attempt": 14,
+      "dock_a": 3,
+      "dock_b": 4,
+      "mean_control_p_dock_a": 0.9322361038986708
+    },
+    {
+      "accepted": false,
+      "attempt": 15,
+      "dock_a": 2,
+      "dock_b": 5,
+      "mean_control_p_dock_a": 0.8406723863654709
+    },
+    {
+      "accepted": false,
+      "attempt": 16,
+      "dock_a": 4,
+      "dock_b": 8,
+      "mean_control_p_dock_a": 0.8853520099970675
+    },
+    {
+      "accepted": false,
+      "attempt": 17,
+      "dock_a": 7,
+      "dock_b": 9,
+      "mean_control_p_dock_a": 0.9211896319936053
+    },
+    {
+      "accepted": false,
+      "attempt": 18,
+      "dock_a": 5,
+      "dock_b": 8,
+      "mean_control_p_dock_a": 0.9375896576222961
+    },
+    {
+      "accepted": false,
+      "attempt": 19,
+      "dock_a": 7,
+      "dock_b": 9,
+      "mean_control_p_dock_a": 0.9211896319936053
+    },
+    {
+      "accepted": false,
+      "attempt": 20,
+      "dock_a": 4,
+      "dock_b": 8,
+      "mean_control_p_dock_a": 0.8853520099970675
+    }
+  ],
+  "label_token_checks": [
+    {
+      "is_single": true,
+      "text": "2",
+      "token_ids": [
+        17
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "3",
+      "token_ids": [
+        18
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "4",
+      "token_ids": [
+        19
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "5",
+      "token_ids": [
+        20
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "6",
+      "token_ids": [
+        21
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "7",
+      "token_ids": [
+        22
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "8",
+      "token_ids": [
+        23
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "9",
+      "token_ids": [
+        24
+      ]
+    }
+  ],
+  "metrics": {
+    "DS": {
+      "DS_degrade_M1": 0.39074095988611934,
+      "DS_degrade_M1_setA": 0.3811898718853891,
+      "DS_degrade_M1_setB": 0.4050675918872145,
+      "DS_deval_M1": 0.8297557854047851,
+      "DS_deval_M1_setA": 0.875000784404269,
+      "DS_deval_M1_setB": 0.761888286905559,
+      "DS_deval_M2": -0.109963228578,
+      "DS_deval_M2_setA": -0.06940415094398611,
+      "DS_deval_M2_setB": -0.17080184502902107,
+      "DS_sham": 0.042660464103429385,
+      "DS_sham_setA": 0.11312092092697024,
+      "DS_sham_setB": -0.06303022113188206,
+      "DS_spoil_M1": 0.8034994399626179,
+      "DS_spoil_M1_setA": 0.8456209361719531,
+      "DS_spoil_M1_setB": 0.7403171956486148
+    },
+    "competence_accuracy": 0.95,
+    "control_by_digit": {
+      "dock_a_higher": NaN,
+      "dock_a_lower": 0.8433894786739063
+    },
+    "control_by_mention_order": {
+      "dock_a_first": 0.9663062044601912,
+      "dock_a_second": 0.704781255978734
+    },
+    "control_by_n": {
+      "n1_eq_n2": 0.9060098585465716,
+      "n1_gt_n2": 0.9162562356234111,
+      "n1_lt_n2": 0.6537335922967688
+    },
+    "control_entropy": 0.6261388282516815,
+    "control_p_dock_a": 0.8433894786739063,
+    "efficacy": {
+      "p_no_deval_M1": 1.0,
+      "p_no_deval_M2": 1.0,
+      "p_yes_control_M1": 0.03984796692711088,
+      "p_yes_control_M2": 1.2650410022504998e-07
+    },
+    "gate_pass": true,
+    "label_mass": 0.9999999897678693,
+    "label_mass_by_type": {
+      "control": 0.999999989271164,
+      "degrade_M1": 0.999999989271164,
+      "deval_M1": 0.9999999934434891,
+      "deval_M2": 0.9999999886751175,
+      "sham": 0.9999999898672104,
+      "spoil_M1": 0.9999999880790711
+    },
+    "label_mass_control": 0.999999989271164,
+    "mapping_accuracy": 1.0,
+    "p_useful_deval_M1": 0.9863663083314895,
+    "p_useful_deval_M1_setA": 0.9772789150476455,
+    "p_useful_deval_M1_setB": 0.9999973982572555,
+    "p_useful_deval_M2": 0.9533527072519064,
+    "p_useful_deval_M2_setA": 0.9671260175605615,
+    "p_useful_deval_M2_setB": 0.9326927417889237,
+    "paired_DS_setA": {
+      "DS_M1": {
+        "by_digit": {
+          "dock_a_higher": NaN,
+          "dock_a_lower": 0.875000784404269
+        },
+        "by_mention_order": {
+          "dock_a_first": 0.9766602987542872,
+          "dock_a_second": 0.7588184822899625
+        },
+        "by_template": {
+          "A1": 0.819822853897802,
+          "A2": 0.9057895501984149,
+          "A3": 0.8993899491165902
+        },
+        "mean": 0.875000784404269,
+        "n": 60,
+        "name": "DS_M1"
+      },
+      "DS_M2": {
+        "by_digit": {
+          "dock_a_higher": NaN,
+          "dock_a_lower": 0.06940415094398607
+        },
+        "by_mention_order": {
+          "dock_a_first": 0.023206664249300957,
+          "dock_a_second": 0.12220127859505478
+        },
+        "by_template": {
+          "A1": 0.0843923521072611,
+          "A2": 0.08556981533765792,
+          "A3": 0.03825028538703919
+        },
+        "mean": 0.06940415094398607,
+        "n": 60,
+        "name": "DS_M2"
+      },
+      "n_pairs_M1": 60,
+      "n_pairs_M2": 60
+    },
+    "sham_shift": 0.042660464103429385,
+    "useful_by_mention_order_setA": {
+      "deval_M1": {
+        "useful_first": 0.9514452133859906,
+        "useful_second": 0.9998834040015936
+      },
+      "deval_M2": {
+        "useful_first": 0.9999835528433323,
+        "useful_second": 0.9295745486659663
+      }
+    }
+  },
+  "model_key": "qwen3_8b",
+  "model_revision": "b968826d9c46dd6066d109eabc6255188de91218",
+  "out_path": "/vol/runs/20261104-171601-t12-base-qwen3_8b-R-f1e690/test_results_cell0.jsonl",
+  "peak_gpu_mem_gb": 17.326073169708252,
+  "prefill": "Dock ",
+  "run_id": "20261104-171601-t12-base-qwen3_8b-R-f1e690",
+  "run_index": 0,
+  "variant": "R"
+}

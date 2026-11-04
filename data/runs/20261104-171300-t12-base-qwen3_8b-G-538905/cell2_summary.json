@@ -1,0 +1,342 @@
+{
+  "battery_summary": {
+    "competence_accuracy": 0.975,
+    "n_competence": 40,
+    "n_dock_prompts": 600,
+    "out_path": "/vol/runs/20261104-171300-t12-base-qwen3_8b-G-538905/test_results_cell2.jsonl",
+    "variant": "G"
+  },
+  "cell": 2,
+  "fixed": {
+    "M1": "seld",
+    "M2": "dax",
+    "cell": 2,
+    "dock_a": 3,
+    "dock_b": 6,
+    "reward_a": 1.0,
+    "reward_b": 0.6,
+    "run_index": 2,
+    "seed": 4002
+  },
+  "gpu": "L40S",
+  "gpu_name": "NVIDIA L40S",
+  "gpu_seconds": 147.04078793525696,
+  "label_draw_tries": [
+    {
+      "accepted": false,
+      "attempt": 1,
+      "dock_a": 6,
+      "dock_b": 7,
+      "mean_control_p_dock_a": 0.9039724809033259
+    },
+    {
+      "accepted": false,
+      "attempt": 2,
+      "dock_a": 3,
+      "dock_b": 5,
+      "mean_control_p_dock_a": 0.8447513052717871
+    },
+    {
+      "accepted": false,
+      "attempt": 3,
+      "dock_a": 2,
+      "dock_b": 7,
+      "mean_control_p_dock_a": 0.8874649880213118
+    },
+    {
+      "accepted": false,
+      "attempt": 4,
+      "dock_a": 4,
+      "dock_b": 8,
+      "mean_control_p_dock_a": 0.8696215608542843
+    },
+    {
+      "accepted": false,
+      "attempt": 5,
+      "dock_a": 2,
+      "dock_b": 7,
+      "mean_control_p_dock_a": 0.8874649880213118
+    },
+    {
+      "accepted": false,
+      "attempt": 6,
+      "dock_a": 7,
+      "dock_b": 9,
+      "mean_control_p_dock_a": 0.8842302318782723
+    },
+    {
+      "accepted": false,
+      "attempt": 7,
+      "dock_a": 3,
+      "dock_b": 5,
+      "mean_control_p_dock_a": 0.8447513052717871
+    },
+    {
+      "accepted": false,
+      "attempt": 8,
+      "dock_a": 4,
+      "dock_b": 8,
+      "mean_control_p_dock_a": 0.8696215608542843
+    },
+    {
+      "accepted": false,
+      "attempt": 9,
+      "dock_a": 3,
+      "dock_b": 6,
+      "mean_control_p_dock_a": 0.8825000646171172
+    },
+    {
+      "accepted": false,
+      "attempt": 10,
+      "dock_a": 7,
+      "dock_b": 9,
+      "mean_control_p_dock_a": 0.8842302318782723
+    },
+    {
+      "accepted": false,
+      "attempt": 11,
+      "dock_a": 5,
+      "dock_b": 9,
+      "mean_control_p_dock_a": 0.9063721264263829
+    },
+    {
+      "accepted": false,
+      "attempt": 12,
+      "dock_a": 2,
+      "dock_b": 9,
+      "mean_control_p_dock_a": 0.8948050129466234
+    },
+    {
+      "accepted": false,
+      "attempt": 13,
+      "dock_a": 2,
+      "dock_b": 9,
+      "mean_control_p_dock_a": 0.8948050129466234
+    },
+    {
+      "accepted": false,
+      "attempt": 14,
+      "dock_a": 2,
+      "dock_b": 9,
+      "mean_control_p_dock_a": 0.8948050129466234
+    },
+    {
+      "accepted": false,
+      "attempt": 15,
+      "dock_a": 4,
+      "dock_b": 9,
+      "mean_control_p_dock_a": 0.8801818927682082
+    },
+    {
+      "accepted": false,
+      "attempt": 16,
+      "dock_a": 2,
+      "dock_b": 5,
+      "mean_control_p_dock_a": 0.8562711280911989
+    },
+    {
+      "accepted": false,
+      "attempt": 17,
+      "dock_a": 6,
+      "dock_b": 8,
+      "mean_control_p_dock_a": 0.9179830982058774
+    },
+    {
+      "accepted": false,
+      "attempt": 18,
+      "dock_a": 6,
+      "dock_b": 7,
+      "mean_control_p_dock_a": 0.9039724809033259
+    },
+    {
+      "accepted": false,
+      "attempt": 19,
+      "dock_a": 7,
+      "dock_b": 9,
+      "mean_control_p_dock_a": 0.8842302318782723
+    },
+    {
+      "accepted": false,
+      "attempt": 20,
+      "dock_a": 3,
+      "dock_b": 6,
+      "mean_control_p_dock_a": 0.8825000646171172
+    }
+  ],
+  "label_token_checks": [
+    {
+      "is_single": true,
+      "text": "2",
+      "token_ids": [
+        17
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "3",
+      "token_ids": [
+        18
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "4",
+      "token_ids": [
+        19
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "5",
+      "token_ids": [
+        20
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "6",
+      "token_ids": [
+        21
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "7",
+      "token_ids": [
+        22
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "8",
+      "token_ids": [
+        23
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "9",
+      "token_ids": [
+        24
+      ]
+    }
+  ],
+  "metrics": {
+    "DS": {
+      "DS_degrade_M1": 0.22498034704679237,
+      "DS_degrade_M1_setA": 0.36418020151139174,
+      "DS_degrade_M1_setB": 0.01618056534989354,
+      "DS_deval_M1": 0.7706083880297159,
+      "DS_deval_M1_setA": 0.8480317660870158,
+      "DS_deval_M1_setB": 0.6544733209437659,
+      "DS_deval_M2": -0.1569826450629359,
+      "DS_deval_M2_setA": -0.09719969074388668,
+      "DS_deval_M2_setB": -0.24665707654150992,
+      "DS_sham": 0.2951346810709723,
+      "DS_sham_setA": 0.3333674230253407,
+      "DS_sham_setB": 0.23778556813941948,
+      "DS_spoil_M1": 0.7877170618891443,
+      "DS_spoil_M1_setA": 0.8855126707129265,
+      "DS_spoil_M1_setB": 0.641023648653471
+    },
+    "competence_accuracy": 0.975,
+    "control_by_digit": {
+      "dock_a_higher": NaN,
+      "dock_a_lower": 0.8224702020304078
+    },
+    "control_by_mention_order": {
+      "dock_a_first": 0.9246007395240495,
+      "dock_a_second": 0.7073017235801308
+    },
+    "control_by_n": {
+      "n1_eq_n2": 0.8968166592530906,
+      "n1_gt_n2": 0.8767435815956058,
+      "n1_lt_n2": 0.6332579488607357
+    },
+    "control_entropy": 0.6746432367470733,
+    "control_p_dock_a": 0.8224702020304078,
+    "efficacy": {
+      "p_no_deval_M1": 0.9999999880790711,
+      "p_no_deval_M2": 0.9999988317489624,
+      "p_yes_control_M1": 0.053923804698400704,
+      "p_yes_control_M2": 0.00017408524851926545
+    },
+    "gate_pass": true,
+    "label_mass": 0.9999999925494194,
+    "label_mass_by_type": {
+      "control": 0.9999999898672104,
+      "degrade_M1": 0.9999999928474427,
+      "deval_M1": 0.9999999952316284,
+      "deval_M2": 0.9999999952316284,
+      "sham": 0.999999994635582,
+      "spoil_M1": 0.9999999874830245
+    },
+    "label_mass_control": 0.9999999898672104,
+    "mapping_accuracy": 1.0,
+    "p_useful_deval_M1": 0.9481381872203201,
+    "p_useful_deval_M1_setA": 0.9461349003016949,
+    "p_useful_deval_M1_setB": 0.951143117598258,
+    "p_useful_deval_M2": 0.9794528470933437,
+    "p_useful_deval_M2_setA": 0.9990965555111567,
+    "p_useful_deval_M2_setB": 0.9499872844666243,
+    "paired_DS_setA": {
+      "DS_M1": {
+        "by_digit": {
+          "dock_a_higher": NaN,
+          "dock_a_lower": 0.8480317660870159
+        },
+        "by_mention_order": {
+          "dock_a_first": 0.882946842953054,
+          "dock_a_second": 0.8081288210972579
+        },
+        "by_template": {
+          "A1": 0.9089267086421792,
+          "A2": 0.6700519053250502,
+          "A3": 0.9651166842938178
+        },
+        "mean": 0.8480317660870159,
+        "n": 60,
+        "name": "DS_M1"
+      },
+      "DS_M2": {
+        "by_digit": {
+          "dock_a_higher": NaN,
+          "dock_a_lower": 0.09719969074388667
+        },
+        "by_mention_order": {
+          "dock_a_first": 0.08805337944068015,
+          "dock_a_second": 0.10765261794755128
+        },
+        "by_template": {
+          "A1": 0.0910732784259416,
+          "A2": 0.19089545942842961,
+          "A3": 0.009630334377288819
+        },
+        "mean": 0.09719969074388667,
+        "n": 60,
+        "name": "DS_M2"
+      },
+      "n_pairs_M1": 60,
+      "n_pairs_M2": 60
+    },
+    "sham_shift": 0.2951346810709723,
+    "useful_by_mention_order_setA": {
+      "deval_M1": {
+        "useful_first": 0.9176740859236036,
+        "useful_second": 0.9710381128825247
+      },
+      "deval_M2": {
+        "useful_first": 0.9999621044844389,
+        "useful_second": 0.9981073566845485
+      }
+    }
+  },
+  "model_key": "qwen3_8b",
+  "model_revision": "b968826d9c46dd6066d109eabc6255188de91218",
+  "out_path": "/vol/runs/20261104-171300-t12-base-qwen3_8b-G-538905/test_results_cell2.jsonl",
+  "peak_gpu_mem_gb": 17.13447904586792,
+  "prefill": "Dock ",
+  "run_id": "20261104-171300-t12-base-qwen3_8b-G-538905",
+  "run_index": 2,
+  "variant": "G"
+}

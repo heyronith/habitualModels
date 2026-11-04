@@ -1,0 +1,223 @@
+{
+  "battery_summary": {
+    "competence_accuracy": 0.95,
+    "n_competence": 40,
+    "n_dock_prompts": 600,
+    "out_path": "/vol/runs/20261104-171725-t12-base-qwen3_14b-G-b835f5/test_results_cell1.jsonl",
+    "variant": "G"
+  },
+  "cell": 1,
+  "fixed": {
+    "M1": "zinth",
+    "M2": "dax",
+    "cell": 1,
+    "dock_a": 9,
+    "dock_b": 2,
+    "reward_a": 1.0,
+    "reward_b": 0.6,
+    "run_index": 1,
+    "seed": 4001
+  },
+  "gpu": "L40S",
+  "gpu_name": "NVIDIA L40S",
+  "gpu_seconds": 61.70920157432556,
+  "label_draw_tries": [
+    {
+      "accepted": false,
+      "attempt": 1,
+      "dock_a": 8,
+      "dock_b": 5,
+      "mean_control_p_dock_a": 0.7820781035364711
+    },
+    {
+      "accepted": false,
+      "attempt": 2,
+      "dock_a": 8,
+      "dock_b": 2,
+      "mean_control_p_dock_a": 0.7615751047910116
+    },
+    {
+      "accepted": true,
+      "attempt": 3,
+      "dock_a": 9,
+      "dock_b": 2,
+      "mean_control_p_dock_a": 0.7222831479197056
+    }
+  ],
+  "label_token_checks": [
+    {
+      "is_single": true,
+      "text": "2",
+      "token_ids": [
+        17
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "3",
+      "token_ids": [
+        18
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "4",
+      "token_ids": [
+        19
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "5",
+      "token_ids": [
+        20
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "6",
+      "token_ids": [
+        21
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "7",
+      "token_ids": [
+        22
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "8",
+      "token_ids": [
+        23
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "9",
+      "token_ids": [
+        24
+      ]
+    }
+  ],
+  "metrics": {
+    "DS": {
+      "DS_degrade_M1": 0.04381185515865238,
+      "DS_degrade_M1_setA": 0.006724808664248849,
+      "DS_degrade_M1_setB": 0.09944242490025779,
+      "DS_deval_M1": 0.7875316357973027,
+      "DS_deval_M1_setA": 0.7951672112700122,
+      "DS_deval_M1_setB": 0.7760782725882385,
+      "DS_deval_M2": -0.1350970249689003,
+      "DS_deval_M2_setA": -0.193424968390976,
+      "DS_deval_M2_setB": -0.047605109835786696,
+      "DS_sham": -0.1114189211914729,
+      "DS_sham_setA": -0.11967668925763597,
+      "DS_sham_setB": -0.0990322690922284,
+      "DS_spoil_M1": 0.398420749237171,
+      "DS_spoil_M1_setA": 0.4534156427590459,
+      "DS_spoil_M1_setB": 0.31592840895435875
+    },
+    "competence_accuracy": 0.95,
+    "control_by_digit": {
+      "dock_a_higher": 0.7897845790559495,
+      "dock_a_lower": NaN
+    },
+    "control_by_mention_order": {
+      "dock_a_first": 0.9624481675707085,
+      "dock_a_second": 0.5950788303052637
+    },
+    "control_by_n": {
+      "n1_eq_n2": 0.7748091683714039,
+      "n1_gt_n2": 0.9686742640774826,
+      "n1_lt_n2": 0.6161727565628762
+    },
+    "control_entropy": 0.7418943074378855,
+    "control_p_dock_a": 0.7897845790559495,
+    "efficacy": {
+      "p_no_deval_M1": 1.0,
+      "p_no_deval_M2": 1.0,
+      "p_yes_control_M1": 0.6358198598495051,
+      "p_yes_control_M2": 0.06499027233496094
+    },
+    "gate_pass": true,
+    "label_mass": 0.9999999940395355,
+    "label_mass_by_type": {
+      "control": 0.9999999922513961,
+      "degrade_M1": 0.9999999910593033,
+      "deval_M1": 1.0,
+      "deval_M2": 0.9999999964237213,
+      "sham": 0.9999999934434891,
+      "spoil_M1": 0.9999999910593033
+    },
+    "label_mass_control": 0.9999999922513961,
+    "mapping_accuracy": 1.0,
+    "p_useful_deval_M1": 0.9977470594644546,
+    "p_useful_deval_M1_setA": 0.9962450991074244,
+    "p_useful_deval_M1_setB": 1.0,
+    "p_useful_deval_M2": 0.9248816040248498,
+    "p_useful_deval_M2_setA": 0.9923470844825109,
+    "p_useful_deval_M2_setB": 0.8236833833383581,
+    "paired_DS_setA": {
+      "DS_M1": {
+        "by_digit": {
+          "dock_a_higher": 0.7951672112700122,
+          "dock_a_lower": NaN
+        },
+        "by_mention_order": {
+          "dock_a_first": 0.9377561736845921,
+          "dock_a_second": 0.6322083970819209
+        },
+        "by_template": {
+          "A1": 0.7001960401397475,
+          "A2": 0.7857312344770531,
+          "A3": 0.899574359193236
+        },
+        "mean": 0.7951672112700122,
+        "n": 60,
+        "name": "DS_M1"
+      },
+      "DS_M2": {
+        "by_digit": {
+          "dock_a_higher": 0.19342496839097603,
+          "dock_a_lower": NaN
+        },
+        "by_mention_order": {
+          "dock_a_first": 0.06219515913107898,
+          "dock_a_second": 0.34340189325942977
+        },
+        "by_template": {
+          "A1": 0.27692114962433173,
+          "A2": 0.20292811484541745,
+          "A3": 0.10042564070317894
+        },
+        "mean": 0.19342496839097603,
+        "n": 60,
+        "name": "DS_M2"
+      },
+      "n_pairs_M1": 60,
+      "n_pairs_M2": 60
+    },
+    "sham_shift": -0.1114189211914729,
+    "useful_by_mention_order_setA": {
+      "deval_M1": {
+        "useful_first": 0.9920093991926738,
+        "useful_second": 0.9999513365328312
+      },
+      "deval_M2": {
+        "useful_first": 1.0,
+        "useful_second": 0.9836008953196662
+      }
+    }
+  },
+  "model_key": "qwen3_14b",
+  "model_revision": "40c069824f4251a91eefaf281ebe4c544efd3e18",
+  "out_path": "/vol/runs/20261104-171725-t12-base-qwen3_14b-G-b835f5/test_results_cell1.jsonl",
+  "peak_gpu_mem_gb": 29.428277492523193,
+  "prefill": "Dock ",
+  "run_id": "20261104-171725-t12-base-qwen3_14b-G-b835f5",
+  "run_index": 1,
+  "variant": "G"
+}
