@@ -92,16 +92,7 @@ def _gpus_for_model(model_key: str) -> list[str]:
     return ["L4", "A10G", "T4"]
 
 
-@app.function(
-    gpu=["L4", "A10G", "L40S", "A100-80GB", "T4"],
-    timeout=60 * 90,
-    image=image,
-    volumes={"/vol": vol},
-    secrets=secrets,
-    memory=65536,
-)
-def template_check_qwen(model_key: str = "qwen3_1_7b") -> dict[str, Any]:
-    """Render prompt + verify single-token labels on a pinned Qwen3 revision."""
+def _template_check_impl(model_key: str) -> dict[str, Any]:
     import sys
 
     sys.path.insert(0, "/root/project/src")
@@ -110,12 +101,10 @@ def template_check_qwen(model_key: str = "qwen3_1_7b") -> dict[str, Any]:
     from habit.env.counterbalance import draw_run_fixed
     from habit.env.render import render_prompt
     from habit.env.state import generate_states
-    from habit.model.chat import render_chat, tokenize_prompt
+    from habit.model.chat import choose_prefill_for_labels, default_prefill, render_chat, tokenize_prompt
     from habit.model.loading import load_model, resolve_model_spec
     from habit.model.scoring import full_softmax_renorm_probs, next_token_logits, restricted_softmax_probs
     from habit.model.tokens import check_single_token
-
-    from habit.model.chat import choose_prefill_for_labels, default_prefill
 
     t0 = time.time()
     Path("/vol/hf_cache").mkdir(parents=True, exist_ok=True)
@@ -183,6 +172,25 @@ def template_check_qwen(model_key: str = "qwen3_1_7b") -> dict[str, Any]:
     out.write_text(json.dumps(result, indent=2) + "\n")
     vol.commit()
     return result
+
+
+@app.function(gpu=["L4", "A10G", "T4"], timeout=60 * 45, **_FUNCTION_KW)
+def template_check_qwen(model_key: str = "qwen3_1_7b") -> dict[str, Any]:
+    """Template/prefill check for ≤4B models."""
+    return _template_check_impl(model_key)
+
+
+@app.function(
+    gpu=["L40S", "A100-80GB"],
+    timeout=60 * 90,
+    image=image,
+    volumes={"/vol": vol},
+    secrets=secrets,
+    memory=65536,
+)
+def template_check_qwen_large(model_key: str = "qwen3_14b") -> dict[str, Any]:
+    """Template/prefill check for 8B/14B (needs ≥40GB GPU)."""
+    return _template_check_impl(model_key)
 
 
 @app.function(gpu=["L4", "A10G", "T4"], timeout=60 * 60 * 3, **_FUNCTION_KW)
@@ -369,7 +377,7 @@ def probes_only_cell(
 
 
 @app.function(
-    gpu=["L40S", "A100-80GB", "A10G"],
+    gpu=["L40S", "A100-80GB"],
     timeout=60 * 60 * 6,
     image=image,
     volumes={"/vol": vol},
@@ -468,7 +476,7 @@ def baseline_battery_cell_large(
 
 
 @app.function(
-    gpu=["A10G", "L40S", "A100-80GB"],
+    gpu=["L40S", "A100-80GB", "A10G"],
     timeout=60 * 60 * 3,
     image=image,
     volumes={"/vol": vol},

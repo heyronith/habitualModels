@@ -188,8 +188,8 @@ def run_p1(app, probes_only_cell, template_check_qwen) -> dict:
     return results
 
 
-def run_p2_p3(app, template_check_qwen, baseline_fn) -> dict:
-    projected = project_cost("L40S", 2 * 90 + 16 * 240)  # 2 template + 16 cells
+def run_p2_p3(app, template_check_large, baseline_fn) -> dict:
+    projected = project_cost("L40S", 2 * 120 + 16 * 240)  # 2 template + 16 cells
     _guard(projected, phase="p3")
     out = {"phase": "p3", "runs": []}
     with app.run():
@@ -206,12 +206,12 @@ def run_p2_p3(app, template_check_qwen, baseline_fn) -> dict:
                 print(f"Template/prefill check {model_key} … skipped (already logged)", flush=True)
                 tc = json.loads(tc_path.read_text())
             else:
-                print(f"Template/prefill check {model_key} …", flush=True)
-                tc = template_check_qwen.remote(model_key)
+                print(f"Template/prefill check {model_key} (L40S/A100) …", flush=True)
+                tc = template_check_large.remote(model_key)
                 write_json(tc_path, tc)
                 spend_tc = record_spend(
                     run_id=f"t1.2-template-{model_key}",
-                    gpu=tc.get("gpu", "A10G"),
+                    gpu=tc.get("gpu", "L40S"),
                     seconds=float(tc.get("gpu_seconds", 0)),
                     note=f"T1.2 template {model_key}",
                 )
@@ -410,6 +410,7 @@ def main() -> None:
         cost_smoke_rl,
         probes_only_cell,
         template_check_qwen,
+        template_check_qwen_large,
         thinking_battery_cell,
     )
 
@@ -419,7 +420,7 @@ def main() -> None:
         p1 = run_p1(app, probes_only_cell, template_check_qwen)
         index["p1"] = p1
     if args.phase in ("p3", "all"):
-        p3 = run_p2_p3(app, template_check_qwen, baseline_battery_cell_large)
+        p3 = run_p2_p3(app, template_check_qwen_large, baseline_battery_cell_large)
         index["p3"] = p3
     if args.phase in ("p5", "all"):
         if p3 is None:
