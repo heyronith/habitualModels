@@ -1,0 +1,95 @@
+{
+  "model_key": "qwen3_1_7b",
+  "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+  "prompt": "<|im_start|>system\nYou manage the supply desk of a small workshop. For each order you send a cart to one dock. Reply with the dock number only.<|im_end|>\n<|im_start|>user\nOrder #167 for Ava: 1 spoft.\nRecipe: 3 dax + 2 vexa.\nDocks: Dock 5 supplies dax. Dock 9 supplies vexa.\nStoreroom: dax 1/20, vexa 0/20.\nWhich dock should the cart go to?<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+  "checks": [
+    {
+      "text": "2",
+      "token_ids": [
+        17
+      ],
+      "is_single": true
+    },
+    {
+      "text": "3",
+      "token_ids": [
+        18
+      ],
+      "is_single": true
+    },
+    {
+      "text": "4",
+      "token_ids": [
+        19
+      ],
+      "is_single": true
+    },
+    {
+      "text": "5",
+      "token_ids": [
+        20
+      ],
+      "is_single": true
+    },
+    {
+      "text": "6",
+      "token_ids": [
+        21
+      ],
+      "is_single": true
+    },
+    {
+      "text": "7",
+      "token_ids": [
+        22
+      ],
+      "is_single": true
+    },
+    {
+      "text": "8",
+      "token_ids": [
+        23
+      ],
+      "is_single": true
+    },
+    {
+      "text": "9",
+      "token_ids": [
+        24
+      ],
+      "is_single": true
+    },
+    {
+      "text": "yes",
+      "token_ids": [
+        9693
+      ],
+      "is_single": true
+    },
+    {
+      "text": "no",
+      "token_ids": [
+        2152
+      ],
+      "is_single": true
+    }
+  ],
+  "all_single": true,
+  "dock_a": 5,
+  "dock_b": 9,
+  "max_abs_diff": 5.960464477539063e-08,
+  "equal_atol_1e-5": true,
+  "fixed": {
+    "run_index": 0,
+    "cell": 0,
+    "seed": 42,
+    "M1": "dax",
+    "M2": "vexa",
+    "dock_a": 5,
+    "dock_b": 9,
+    "reward_a": 1.0,
+    "reward_b": 0.6
+  },
+  "gpu": "L4",
+  "gpu_seconds": 32.127657890319824
+}

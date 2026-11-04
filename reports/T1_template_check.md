@@ -1,6 +1,9 @@
 # T1 template check
 
-model_key: `tiny`
+Primary live check on **Qwen3-1.7B** (thinking disabled). Tiny CPU model check retained in `T1_template_check_tiny.md`.
+
+model_key: `qwen3_1_7b`
+revision: `70d244cc86ccca08cf5af4e1e306ecf908b1ad5e`
 
 ## Rendered string up to answer position
 
@@ -27,21 +30,21 @@ length_chars: 391
 
 | text | token_ids | single |
 |---|---|---|
-| 2 | [8] | True |
-| 3 | [9] | True |
-| 4 | [10] | True |
-| 5 | [11] | True |
-| 6 | [12] | True |
-| 7 | [13] | True |
-| 8 | [14] | True |
-| 9 | [15] | True |
-| yes | [16] | True |
-| no | [17] | True |
+| 2 | [17] | True |
+| 3 | [18] | True |
+| 4 | [19] | True |
+| 5 | [20] | True |
+| 6 | [21] | True |
+| 7 | [22] | True |
+| 8 | [23] | True |
+| 9 | [24] | True |
+| yes | [9693] | True |
+| no | [2152] | True |
 
 all_single: True
 
 ## Restricted vs renormalised full softmax
 
 dock_a=5, dock_b=9
-max_abs_diff: 2.9802322387695312e-08
+max_abs_diff: 5.960464477539063e-08
 equal_atol_1e-5: True
