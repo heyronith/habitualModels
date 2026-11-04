@@ -37,12 +37,28 @@ def load_tokenizer(model_key: str, *, cache_dir: str | Path | None = None):
     )
 
 
+def prefetch_model_weights(model_key: str, *, cache_dir: str | Path | None = None) -> None:
+    """Download tokenizer + all weight shards before ``from_pretrained`` (large models)."""
+    if model_key == "tiny":
+        return
+    from huggingface_hub import snapshot_download
+
+    spec = resolve_model_spec(model_key)
+    snapshot_download(
+        repo_id=spec["id"],
+        revision=spec["revision"],
+        cache_dir=cache_dir,
+        ignore_patterns=["*.msgpack", "*.h5", "*.ot", "original/*"],
+    )
+
+
 def load_model(
     model_key: str,
     *,
     device: str = "cpu",
     dtype: torch.dtype | None = None,
     cache_dir: str | Path | None = None,
+    prefetch: bool | None = None,
 ):
     if model_key == "tiny":
         model, tokenizer = build_tiny_model(device=device)
@@ -50,6 +66,11 @@ def load_model(
     spec = resolve_model_spec(model_key)
     if dtype is None:
         dtype = torch.bfloat16 if device != "cpu" else torch.float32
+    # Prefetch large models so partial shard failures are rarer / retryable.
+    if prefetch is None:
+        prefetch = model_key in {"qwen3_8b", "qwen3_14b"}
+    if prefetch:
+        prefetch_model_weights(model_key, cache_dir=cache_dir)
     tokenizer = AutoTokenizer.from_pretrained(
         spec["id"],
         revision=spec["revision"],
@@ -62,6 +83,7 @@ def load_model(
         torch_dtype=dtype,
         trust_remote_code=True,
         cache_dir=cache_dir,
+        low_cpu_mem_usage=True,
     )
     model.to(device)
     model.eval()

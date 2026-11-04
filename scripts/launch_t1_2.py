@@ -194,16 +194,28 @@ def run_p2_p3(app, template_check_qwen, baseline_fn) -> dict:
     out = {"phase": "p3", "runs": []}
     with app.run():
         for model_key in ["qwen3_8b", "qwen3_14b"]:
-            print(f"Template/prefill check {model_key} …", flush=True)
-            tc = template_check_qwen.remote(model_key)
-            write_json(ROOT / "reports" / f"T1.2_template_check_{model_key}.json", tc)
-            spend_tc = record_spend(
-                run_id=f"t1.2-template-{model_key}",
-                gpu=tc.get("gpu", "A10G"),
-                seconds=float(tc.get("gpu_seconds", 0)),
-                note=f"T1.2 template {model_key}",
-            )
-            _record_task(f"t1.2-template-{model_key}", spend_tc["cost_usd"], phase="p2")
+            tc_path = ROOT / "reports" / f"T1.2_template_check_{model_key}.json"
+            # Skip re-billing if this template check already succeeded this task.
+            already = False
+            if TASK_LEDGER.exists():
+                for line in TASK_LEDGER.read_text().splitlines():
+                    if line.strip() and json.loads(line).get("run_id") == f"t1.2-template-{model_key}":
+                        already = True
+                        break
+            if already and tc_path.exists():
+                print(f"Template/prefill check {model_key} … skipped (already logged)", flush=True)
+                tc = json.loads(tc_path.read_text())
+            else:
+                print(f"Template/prefill check {model_key} …", flush=True)
+                tc = template_check_qwen.remote(model_key)
+                write_json(tc_path, tc)
+                spend_tc = record_spend(
+                    run_id=f"t1.2-template-{model_key}",
+                    gpu=tc.get("gpu", "A10G"),
+                    seconds=float(tc.get("gpu_seconds", 0)),
+                    note=f"T1.2 template {model_key}",
+                )
+                _record_task(f"t1.2-template-{model_key}", spend_tc["cost_usd"], phase="p2")
             assert tc.get("prefill_label_ok") and tc.get("all_single"), tc
 
         for model_key in ["qwen3_8b", "qwen3_14b"]:

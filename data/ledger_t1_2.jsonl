@@ -1,2 +1,3 @@
 {"run_id": "t1.2-template-qwen3_4b", "cost_usd": 0.048693106024265284, "phase": "p1"}
 {"run_id": "20261104-165941-t12-probe-qwen3_4b-R-e28b91", "cost_usd": 0.11674733508682252, "phase": "p1"}
+{"run_id": "t1.2-template-qwen3_8b", "cost_usd": 0.023276878791332247, "phase": "p2"}

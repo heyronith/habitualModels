@@ -12,3 +12,4 @@
 {"cost_usd": 0.062324977653980256, "gpu": "A10G", "gpu_seconds": 203.67639756202698, "note": "T1.1 baseline qwen3_4b R", "run_id": "20261104-155236-t11-base-qwen3_4b-R-d54d52", "ts": "2026-11-04T15:53:58Z", "usd_per_second": 0.000306}
 {"cost_usd": 0.048693106024265284, "gpu": "A100-80GB", "gpu_seconds": 70.16297698020935, "note": "T1.2 template check 4B", "run_id": "t1.2-template-qwen3_4b", "ts": "2026-11-04T16:59:41Z", "usd_per_second": 0.000694}
 {"cost_usd": 0.11674733508682252, "gpu": "A10G", "gpu_seconds": 381.5272388458252, "note": "T1.2 P1 probes 4B-R", "run_id": "20261104-165941-t12-probe-qwen3_4b-R-e28b91", "ts": "2026-11-04T17:02:51Z", "usd_per_second": 0.000306}
+{"cost_usd": 0.023276878791332247, "gpu": "A10G", "gpu_seconds": 76.06823134422302, "note": "T1.2 template qwen3_8b", "run_id": "t1.2-template-qwen3_8b", "ts": "2026-11-04T17:04:35Z", "usd_per_second": 0.000306}

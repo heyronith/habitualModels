@@ -28,9 +28,17 @@ image = (
         "accelerate==1.6.0",
         "safetensors==0.5.3",
         "huggingface-hub==0.30.2",
+        "hf-transfer==0.1.9",
         "tqdm==4.67.1",
     )
-    .env({"HF_HOME": "/root/.cache/huggingface", "PYTHONPATH": "/root/project/src"})
+    .env(
+        {
+            # Persist HF weights on the Modal volume across jobs (needed for 8B/14B).
+            "HF_HOME": "/vol/hf_cache",
+            "HF_HUB_ENABLE_HF_TRANSFER": "1",
+            "PYTHONPATH": "/root/project/src",
+        }
+    )
     .add_local_dir(str(_REPO / "src"), remote_path="/root/project/src")
     .add_local_dir(str(_REPO / "configs"), remote_path="/root/project/configs")
     .add_local_dir(str(_REPO / "prompts"), remote_path="/root/project/prompts")
@@ -84,7 +92,14 @@ def _gpus_for_model(model_key: str) -> list[str]:
     return ["L4", "A10G", "T4"]
 
 
-@app.function(gpu=["L4", "A10G", "L40S", "A100-80GB", "T4"], timeout=60 * 45, **_FUNCTION_KW)
+@app.function(
+    gpu=["L4", "A10G", "L40S", "A100-80GB", "T4"],
+    timeout=60 * 90,
+    image=image,
+    volumes={"/vol": vol},
+    secrets=secrets,
+    memory=65536,
+)
 def template_check_qwen(model_key: str = "qwen3_1_7b") -> dict[str, Any]:
     """Render prompt + verify single-token labels on a pinned Qwen3 revision."""
     import sys
@@ -103,7 +118,9 @@ def template_check_qwen(model_key: str = "qwen3_1_7b") -> dict[str, Any]:
     from habit.model.chat import choose_prefill_for_labels, default_prefill
 
     t0 = time.time()
+    Path("/vol/hf_cache").mkdir(parents=True, exist_ok=True)
     model, tokenizer = load_model(model_key, device="cuda", dtype=torch.bfloat16)
+    vol.commit()
     pref = choose_prefill_for_labels(tokenizer)
     fixed = draw_run_fixed(0, 42, tokenizer=tokenizer)
     st = generate_states(fixed, 1, 0, training=True)[0]
@@ -352,8 +369,8 @@ def probes_only_cell(
 
 
 @app.function(
-    gpu=["A10G", "L40S", "A100-80GB"],
-    timeout=60 * 60 * 4,
+    gpu=["L40S", "A100-80GB", "A10G"],
+    timeout=60 * 60 * 6,
     image=image,
     volumes={"/vol": vol},
     secrets=secrets,
@@ -383,7 +400,9 @@ def baseline_battery_cell_large(
     t0 = time.time()
     if torch.cuda.is_available():
         torch.cuda.reset_peak_memory_stats()
+    Path("/vol/hf_cache").mkdir(parents=True, exist_ok=True)
     model, tokenizer = load_model(model_key, device="cuda", dtype=torch.bfloat16)
+    vol.commit()  # persist HF cache after first download
     pref = choose_prefill_for_labels(tokenizer)
     assert pref == default_prefill(), f"prefill mismatch: {pref!r} vs {default_prefill()!r}"
     label_checks = [
@@ -450,7 +469,7 @@ def baseline_battery_cell_large(
 
 @app.function(
     gpu=["A10G", "L40S", "A100-80GB"],
-    timeout=60 * 60 * 2,
+    timeout=60 * 60 * 3,
     image=image,
     volumes={"/vol": vol},
     secrets=secrets,

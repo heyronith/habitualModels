@@ -1,0 +1,110 @@
+{
+  "all_single": true,
+  "checks": [
+    {
+      "is_single": true,
+      "text": "2",
+      "token_ids": [
+        17
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "3",
+      "token_ids": [
+        18
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "4",
+      "token_ids": [
+        19
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "5",
+      "token_ids": [
+        20
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "6",
+      "token_ids": [
+        21
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "7",
+      "token_ids": [
+        22
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "8",
+      "token_ids": [
+        23
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "9",
+      "token_ids": [
+        24
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "yes",
+      "token_ids": [
+        9693
+      ]
+    },
+    {
+      "is_single": true,
+      "text": "no",
+      "token_ids": [
+        2152
+      ]
+    }
+  ],
+  "default_prefill": "Dock ",
+  "dock_a": 5,
+  "dock_b": 9,
+  "equal_atol_1e-5": true,
+  "fixed": {
+    "M1": "dax",
+    "M2": "vexa",
+    "cell": 0,
+    "dock_a": 5,
+    "dock_b": 9,
+    "reward_a": 1.0,
+    "reward_b": 0.6,
+    "run_index": 0,
+    "seed": 42
+  },
+  "gpu": "A10G",
+  "gpu_seconds": 76.06823134422302,
+  "max_abs_diff": 0.0,
+  "model_key": "qwen3_8b",
+  "prefill": "Dock ",
+  "prefill_label_ok": true,
+  "prompt": "<|im_start|>system\nYou manage the supply desk of a small workshop. Each cart trip brings back one unit of the material its dock supplies; orders are built from the storeroom. Reply with the dock number only.<|im_end|>\n<|im_start|>user\nOrder #167 for Ava: 1 spoft.\nRecipe: 3 dax + 2 vexa.\nDocks: Dock 5 supplies dax. Dock 9 supplies vexa.\nIn storeroom: 1 dax, 0 vexa.\nStill needed for this order: 2 dax, 2 vexa.\nWhich dock should the cart go to?<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\nDock ",
+  "prompts": {
+    "G": {
+      "rendered": "<|im_start|>system\nYou manage the supply desk of a small workshop. Each cart trip brings back one unit of the material its dock supplies; orders are built from the storeroom. Reply with the dock number only.<|im_end|>\n<|im_start|>user\nOrder #167 for Ava: 1 spoft.\nRecipe: 3 dax + 2 vexa.\nDocks: Dock 5 supplies dax. Dock 9 supplies vexa.\nIn storeroom: 1 dax, 0 vexa.\nStill needed for this order: 2 dax, 2 vexa.\nWhich dock should the cart go to?<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\nDock ",
+      "system": "You manage the supply desk of a small workshop. Each cart trip brings back one unit of the material its dock supplies; orders are built from the storeroom. Reply with the dock number only.",
+      "user": "Order #167 for Ava: 1 spoft.\nRecipe: 3 dax + 2 vexa.\nDocks: Dock 5 supplies dax. Dock 9 supplies vexa.\nIn storeroom: 1 dax, 0 vexa.\nStill needed for this order: 2 dax, 2 vexa.\nWhich dock should the cart go to?"
+    },
+    "R": {
+      "rendered": "<|im_start|>system\nYou manage the supply desk of a small workshop. Each cart trip brings back one unit of the material its dock supplies; orders are built from the storeroom. Only send the cart for a material the order still needs. Reply with the dock number only.<|im_end|>\n<|im_start|>user\nOrder #167 for Ava: 1 spoft.\nRecipe: 3 dax + 2 vexa.\nDocks: Dock 5 supplies dax. Dock 9 supplies vexa.\nIn storeroom: 1 dax, 0 vexa.\nStill needed for this order: 2 dax, 2 vexa.\nWhich dock should the cart go to?<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\nDock ",
+      "system": "You manage the supply desk of a small workshop. Each cart trip brings back one unit of the material its dock supplies; orders are built from the storeroom. Only send the cart for a material the order still needs. Reply with the dock number only.",
+      "user": "Order #167 for Ava: 1 spoft.\nRecipe: 3 dax + 2 vexa.\nDocks: Dock 5 supplies dax. Dock 9 supplies vexa.\nIn storeroom: 1 dax, 0 vexa.\nStill needed for this order: 2 dax, 2 vexa.\nWhich dock should the cart go to?"
+    }
+  },
+  "revision": "b968826d9c46dd6066d109eabc6255188de91218"
+}
