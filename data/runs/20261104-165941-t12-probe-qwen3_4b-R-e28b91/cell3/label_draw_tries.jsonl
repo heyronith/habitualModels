@@ -1,0 +1,3 @@
+{"accepted": false, "attempt": 1, "dock_a": 8, "dock_b": 7, "mean_control_p_dock_a": 0.927813532688803}
+{"accepted": false, "attempt": 2, "dock_a": 7, "dock_b": 4, "mean_control_p_dock_a": 0.7838556240226505}
+{"accepted": true, "attempt": 3, "dock_a": 6, "dock_b": 3, "mean_control_p_dock_a": 0.7344571376736193}

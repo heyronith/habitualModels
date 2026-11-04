@@ -1,0 +1,195 @@
+{
+  "fixed": {
+    "M1": "glim",
+    "M2": "brint",
+    "cell": 2,
+    "dock_a": 4,
+    "dock_b": 5,
+    "reward_a": 1.0,
+    "reward_b": 0.6,
+    "run_index": 2,
+    "seed": 3002
+  },
+  "gpu": "A10G",
+  "gpu_name": "NVIDIA A10",
+  "gpu_seconds": 96.72859072685242,
+  "label_draw_tries": [
+    {
+      "accepted": false,
+      "attempt": 1,
+      "dock_a": 5,
+      "dock_b": 9,
+      "mean_control_p_dock_a": 0.9325845261454333
+    },
+    {
+      "accepted": false,
+      "attempt": 2,
+      "dock_a": 5,
+      "dock_b": 7,
+      "mean_control_p_dock_a": 0.9266020053954847
+    },
+    {
+      "accepted": false,
+      "attempt": 3,
+      "dock_a": 3,
+      "dock_b": 6,
+      "mean_control_p_dock_a": 0.8652238667008787
+    },
+    {
+      "accepted": false,
+      "attempt": 4,
+      "dock_a": 3,
+      "dock_b": 7,
+      "mean_control_p_dock_a": 0.8934852542481356
+    },
+    {
+      "accepted": false,
+      "attempt": 5,
+      "dock_a": 6,
+      "dock_b": 7,
+      "mean_control_p_dock_a": 0.9143029909276713
+    },
+    {
+      "accepted": false,
+      "attempt": 6,
+      "dock_a": 5,
+      "dock_b": 9,
+      "mean_control_p_dock_a": 0.9325845261454333
+    },
+    {
+      "accepted": false,
+      "attempt": 7,
+      "dock_a": 4,
+      "dock_b": 8,
+      "mean_control_p_dock_a": 0.850458838906665
+    },
+    {
+      "accepted": false,
+      "attempt": 8,
+      "dock_a": 4,
+      "dock_b": 5,
+      "mean_control_p_dock_a": 0.8303578124514085
+    },
+    {
+      "accepted": false,
+      "attempt": 9,
+      "dock_a": 2,
+      "dock_b": 8,
+      "mean_control_p_dock_a": 0.8199773564567977
+    },
+    {
+      "accepted": false,
+      "attempt": 10,
+      "dock_a": 2,
+      "dock_b": 3,
+      "mean_control_p_dock_a": 0.7942762985401065
+    },
+    {
+      "accepted": false,
+      "attempt": 11,
+      "dock_a": 3,
+      "dock_b": 4,
+      "mean_control_p_dock_a": 0.8705713195022023
+    },
+    {
+      "accepted": false,
+      "attempt": 12,
+      "dock_a": 3,
+      "dock_b": 4,
+      "mean_control_p_dock_a": 0.8705713195022023
+    },
+    {
+      "accepted": false,
+      "attempt": 13,
+      "dock_a": 5,
+      "dock_b": 8,
+      "mean_control_p_dock_a": 0.8694219473709566
+    },
+    {
+      "accepted": false,
+      "attempt": 14,
+      "dock_a": 2,
+      "dock_b": 5,
+      "mean_control_p_dock_a": 0.8123932152946689
+    },
+    {
+      "accepted": false,
+      "attempt": 15,
+      "dock_a": 2,
+      "dock_b": 6,
+      "mean_control_p_dock_a": 0.8166482633330464
+    },
+    {
+      "accepted": false,
+      "attempt": 16,
+      "dock_a": 5,
+      "dock_b": 8,
+      "mean_control_p_dock_a": 0.8694219473709566
+    },
+    {
+      "accepted": false,
+      "attempt": 17,
+      "dock_a": 4,
+      "dock_b": 5,
+      "mean_control_p_dock_a": 0.8303578124514085
+    },
+    {
+      "accepted": false,
+      "attempt": 18,
+      "dock_a": 3,
+      "dock_b": 9,
+      "mean_control_p_dock_a": 0.9136719809224928
+    },
+    {
+      "accepted": false,
+      "attempt": 19,
+      "dock_a": 2,
+      "dock_b": 5,
+      "mean_control_p_dock_a": 0.8123932152946689
+    },
+    {
+      "accepted": false,
+      "attempt": 20,
+      "dock_a": 4,
+      "dock_b": 5,
+      "mean_control_p_dock_a": 0.8303578124514085
+    }
+  ],
+  "metrics": {
+    "efficacy": {
+      "p_no_deval_M1": 1.0,
+      "p_no_deval_M2": 0.9999998033046722,
+      "p_yes_control_M1": 0.23369510280858458,
+      "p_yes_control_M2": 0.4028330324270087
+    },
+    "mapping_accuracy": 1.0
+  },
+  "model_key": "qwen3_4b",
+  "model_revision": "1cfa9a7208912126459214e8b04321603b3df60c",
+  "peak_gpu_mem_gb": 7.662007808685303,
+  "probe_summary": {
+    "efficacy": {
+      "p_no_deval_M1": 1.0,
+      "p_no_deval_M2": 0.9999998033046722,
+      "p_yes_control_M1": 0.23369510280858458,
+      "p_yes_control_M2": 0.4028330324270087
+    },
+    "example_probe_messages": [
+      {
+        "content": "You manage the supply desk of a small workshop. Each cart trip brings back one unit of the material its dock supplies; orders are built from the storeroom. Only send the cart for a material the order still needs. Answer the question briefly.",
+        "role": "system"
+      },
+      {
+        "content": "Order #486 for Asher: 1 zorv.\nRecipe: 2 glim + 1 brint.\nDocks: Dock 5 supplies brint. Dock 4 supplies glim.\nIn storeroom: 2 glim, 0 brint.\nStill needed for this order: 0 glim, 1 brint.\nIs another glim useful for this order right now? Reply yes or no.",
+        "role": "user"
+      }
+    ],
+    "mapping_accuracy": 1.0,
+    "n_probe_rows": 160,
+    "out_path": "/vol/runs/20261104-165941-t12-probe-qwen3_4b-R-e28b91/probe_results_cell2.jsonl",
+    "variant": "R"
+  },
+  "run_id": "20261104-165941-t12-probe-qwen3_4b-R-e28b91",
+  "run_index": 2,
+  "variant": "R"
+}

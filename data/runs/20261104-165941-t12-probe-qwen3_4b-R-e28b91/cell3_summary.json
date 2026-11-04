@@ -1,0 +1,76 @@
+{
+  "fixed": {
+    "M1": "zinth",
+    "M2": "quor",
+    "cell": 3,
+    "dock_a": 6,
+    "dock_b": 3,
+    "reward_a": 1.0,
+    "reward_b": 0.6,
+    "run_index": 3,
+    "seed": 3003
+  },
+  "gpu": "A10G",
+  "gpu_name": "NVIDIA A10",
+  "gpu_seconds": 55.27215576171875,
+  "label_draw_tries": [
+    {
+      "accepted": false,
+      "attempt": 1,
+      "dock_a": 8,
+      "dock_b": 7,
+      "mean_control_p_dock_a": 0.927813532688803
+    },
+    {
+      "accepted": false,
+      "attempt": 2,
+      "dock_a": 7,
+      "dock_b": 4,
+      "mean_control_p_dock_a": 0.7838556240226505
+    },
+    {
+      "accepted": true,
+      "attempt": 3,
+      "dock_a": 6,
+      "dock_b": 3,
+      "mean_control_p_dock_a": 0.7344571376736193
+    }
+  ],
+  "metrics": {
+    "efficacy": {
+      "p_no_deval_M1": 0.9999999642372132,
+      "p_no_deval_M2": 0.9999999344348908,
+      "p_yes_control_M1": 0.3664402250360581,
+      "p_yes_control_M2": 0.14875777589464878
+    },
+    "mapping_accuracy": 1.0
+  },
+  "model_key": "qwen3_4b",
+  "model_revision": "1cfa9a7208912126459214e8b04321603b3df60c",
+  "peak_gpu_mem_gb": 7.662007808685303,
+  "probe_summary": {
+    "efficacy": {
+      "p_no_deval_M1": 0.9999999642372132,
+      "p_no_deval_M2": 0.9999999344348908,
+      "p_yes_control_M1": 0.3664402250360581,
+      "p_yes_control_M2": 0.14875777589464878
+    },
+    "example_probe_messages": [
+      {
+        "content": "You manage the supply desk of a small workshop. Each cart trip brings back one unit of the material its dock supplies; orders are built from the storeroom. Only send the cart for a material the order still needs. Answer the question briefly.",
+        "role": "system"
+      },
+      {
+        "content": "Order #486 for Asher: 1 zorv.\nRecipe: 2 zinth + 1 quor.\nDocks: Dock 3 supplies quor. Dock 6 supplies zinth.\nIn storeroom: 2 zinth, 0 quor.\nStill needed for this order: 0 zinth, 1 quor.\nIs another zinth useful for this order right now? Reply yes or no.",
+        "role": "user"
+      }
+    ],
+    "mapping_accuracy": 1.0,
+    "n_probe_rows": 160,
+    "out_path": "/vol/runs/20261104-165941-t12-probe-qwen3_4b-R-e28b91/probe_results_cell3.jsonl",
+    "variant": "R"
+  },
+  "run_id": "20261104-165941-t12-probe-qwen3_4b-R-e28b91",
+  "run_index": 3,
+  "variant": "R"
+}

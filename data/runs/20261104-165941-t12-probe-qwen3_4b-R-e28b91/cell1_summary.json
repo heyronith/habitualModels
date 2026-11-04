@@ -1,0 +1,62 @@
+{
+  "fixed": {
+    "M1": "zinth",
+    "M2": "mip",
+    "cell": 1,
+    "dock_a": 7,
+    "dock_b": 4,
+    "reward_a": 1.0,
+    "reward_b": 0.6,
+    "run_index": 1,
+    "seed": 3001
+  },
+  "gpu": "A10G",
+  "gpu_name": "NVIDIA A10",
+  "gpu_seconds": 60.20593023300171,
+  "label_draw_tries": [
+    {
+      "accepted": true,
+      "attempt": 1,
+      "dock_a": 7,
+      "dock_b": 4,
+      "mean_control_p_dock_a": 0.7315733742028527
+    }
+  ],
+  "metrics": {
+    "efficacy": {
+      "p_no_deval_M1": 1.0,
+      "p_no_deval_M2": 0.9999999940395355,
+      "p_yes_control_M1": 0.29607728117061927,
+      "p_yes_control_M2": 0.07401550274789201
+    },
+    "mapping_accuracy": 1.0
+  },
+  "model_key": "qwen3_4b",
+  "model_revision": "1cfa9a7208912126459214e8b04321603b3df60c",
+  "peak_gpu_mem_gb": 7.660494804382324,
+  "probe_summary": {
+    "efficacy": {
+      "p_no_deval_M1": 1.0,
+      "p_no_deval_M2": 0.9999999940395355,
+      "p_yes_control_M1": 0.29607728117061927,
+      "p_yes_control_M2": 0.07401550274789201
+    },
+    "example_probe_messages": [
+      {
+        "content": "You manage the supply desk of a small workshop. Each cart trip brings back one unit of the material its dock supplies; orders are built from the storeroom. Only send the cart for a material the order still needs. Answer the question briefly.",
+        "role": "system"
+      },
+      {
+        "content": "Order #486 for Asher: 1 zorv.\nRecipe: 2 zinth + 1 mip.\nDocks: Dock 4 supplies mip. Dock 7 supplies zinth.\nIn storeroom: 2 zinth, 0 mip.\nStill needed for this order: 0 zinth, 1 mip.\nIs another zinth useful for this order right now? Reply yes or no.",
+        "role": "user"
+      }
+    ],
+    "mapping_accuracy": 1.0,
+    "n_probe_rows": 160,
+    "out_path": "/vol/runs/20261104-165941-t12-probe-qwen3_4b-R-e28b91/probe_results_cell1.jsonl",
+    "variant": "R"
+  },
+  "run_id": "20261104-165941-t12-probe-qwen3_4b-R-e28b91",
+  "run_index": 1,
+  "variant": "R"
+}
