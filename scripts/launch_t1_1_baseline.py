@@ -28,8 +28,8 @@ def main() -> None:
         raise SystemExit("Live runs require a clean git tree")
     budget = load_budget()
     # 2 models × 2 variants × 4 cells; include F5 bias eval overhead.
-    seconds = 16 * 90  # conservative L4 seconds per cell incl. bias guard
-    projected = project_cost("L4", seconds)
+    seconds = 16 * 120 + 2 * 60  # cells + template checks; A10G-priced worst case
+    projected = project_cost("A10G", seconds)
     # Also respect remaining room under $1 task cap for T1.1 (fresh task).
     task_spent_marker = ROOT / "data" / "ledger_t1_1.jsonl"
     prior = 0.0
@@ -54,24 +54,19 @@ def main() -> None:
             # Reuse template_check_qwen for 1.7B; for 4B call same with key.
             tc = template_check_qwen.remote(model_key)
             write_json(ROOT / "reports" / f"T1.1_template_check_{model_key}.json", tc)
-            record_spend(
+            gpu_tc = tc.get("gpu", "L4")
+            # template_check may not yet report gpu key; default L4 price band
+            if "gpu" not in tc:
+                gpu_tc = "L4"
+            spend_tc = record_spend(
                 run_id=f"t1.1-template-{model_key}",
-                gpu="L4",
+                gpu=gpu_tc,
                 seconds=float(tc.get("gpu_seconds", 0)),
                 note=f"T1.1 template check {model_key}",
             )
-            # Mirror into T1.1 ledger
             task_spent_marker.parent.mkdir(parents=True, exist_ok=True)
             with task_spent_marker.open("a") as f:
-                f.write(
-                    json.dumps(
-                        {
-                            "run_id": f"t1.1-template-{model_key}",
-                            "cost_usd": project_cost("L4", float(tc.get("gpu_seconds", 0))),
-                        }
-                    )
-                    + "\n"
-                )
+                f.write(json.dumps({"run_id": f"t1.1-template-{model_key}", "cost_usd": spend_tc["cost_usd"]}) + "\n")
 
         for model_key in ["qwen3_1_7b", "qwen3_4b"]:
             for variant in ["G", "R"]:
@@ -161,9 +156,16 @@ def main() -> None:
                     local_dir / "checkpoint_manifest.json",
                     {"checkpoints": [], "note": "C0 base model not saved"},
                 )
+                gpu_used = cell_metrics[0].get("gpu", "L4") if cell_metrics else "L4"
+                # If cells used mixed GPUs, charge at the max price among them.
+                prices = load_budget()["gpu_prices_usd_per_second"]
+                gpu_used = max(
+                    (c.get("gpu", "L4") for c in cell_metrics),
+                    key=lambda g: float(prices.get(g, 0)),
+                )
                 spend = record_spend(
                     run_id=run_id,
-                    gpu="L4",
+                    gpu=gpu_used,
                     seconds=total_gpu_s,
                     note=f"T1.1 baseline {model_key} {variant}",
                     run_dir=local_dir,

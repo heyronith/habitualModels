@@ -59,7 +59,7 @@ def _gpu_mem_peak_gb() -> float | None:
         return None
 
 
-@app.function(gpu="L4", timeout=60 * 30, **_FUNCTION_KW)
+@app.function(gpu=["L4", "A10G", "T4"], timeout=60 * 30, **_FUNCTION_KW)
 def template_check_qwen(model_key: str = "qwen3_1_7b") -> dict[str, Any]:
     """Render prompt + verify single-token labels on a pinned Qwen3 revision."""
     import sys
@@ -131,7 +131,15 @@ def template_check_qwen(model_key: str = "qwen3_1_7b") -> dict[str, Any]:
         "max_abs_diff": max_diff,
         "equal_atol_1e-5": max_diff < 1e-5,
         "fixed": fixed.to_dict(),
-        "gpu": "L4",
+        "gpu": (
+            "L40S"
+            if "L40" in (torch.cuda.get_device_name(0) if torch.cuda.is_available() else "")
+            else "A10G"
+            if "A10" in (torch.cuda.get_device_name(0) if torch.cuda.is_available() else "")
+            else "T4"
+            if "T4" in (torch.cuda.get_device_name(0) if torch.cuda.is_available() else "")
+            else "L4"
+        ),
         "gpu_seconds": time.time() - t0,
     }
     out = Path(f"/vol/reports/T1.1_template_check_{model_key}.json")
@@ -141,7 +149,7 @@ def template_check_qwen(model_key: str = "qwen3_1_7b") -> dict[str, Any]:
     return result
 
 
-@app.function(gpu="L4", timeout=60 * 60 * 3, **_FUNCTION_KW)
+@app.function(gpu=["L4", "A10G", "T4"], timeout=60 * 60 * 3, **_FUNCTION_KW)
 def baseline_battery_cell(
     model_key: str,
     run_index: int,
@@ -204,6 +212,15 @@ def baseline_battery_cell(
     rows = load_jsonl(local_out)
     metrics = summarize_battery(rows)
     spec = resolve_model_spec(model_key)
+    gpu_name = torch.cuda.get_device_name(0) if torch.cuda.is_available() else "cpu"
+    if "L40" in gpu_name:
+        gpu_key = "L40S"
+    elif "A10" in gpu_name:
+        gpu_key = "A10G"
+    elif "T4" in gpu_name:
+        gpu_key = "T4"
+    else:
+        gpu_key = "L4"
     result = {
         "run_id": run_id,
         "model_key": model_key,
@@ -217,7 +234,8 @@ def baseline_battery_cell(
         "label_draw_tries": tries,
         "battery_summary": summary,
         "metrics": metrics,
-        "gpu": "L4",
+        "gpu": gpu_key,
+        "gpu_name": gpu_name,
         "gpu_seconds": time.time() - t0,
         "peak_gpu_mem_gb": _gpu_mem_peak_gb(),
         "out_path": str(local_out),
