@@ -12,6 +12,7 @@ import modal
 
 APP_NAME = os.environ.get("HABIT_MODAL_APP", "habitual-models")
 VOLUME_NAME = os.environ.get("HABIT_VOLUME", "habitual-checkpoints")
+_REPO = Path(__file__).resolve().parent
 
 image = (
     modal.Image.debian_slim(python_version="3.11")
@@ -29,16 +30,22 @@ image = (
         "huggingface-hub==0.30.2",
         "tqdm==4.67.1",
     )
-    .env({"HF_HOME": "/root/.cache/huggingface"})
-    .add_local_dir("src", remote_path="/root/project/src")
-    .add_local_dir("configs", remote_path="/root/project/configs")
-    .add_local_dir("prompts", remote_path="/root/project/prompts")
+    .env({"HF_HOME": "/root/.cache/huggingface", "PYTHONPATH": "/root/project/src"})
+    .add_local_dir(str(_REPO / "src"), remote_path="/root/project/src")
+    .add_local_dir(str(_REPO / "configs"), remote_path="/root/project/configs")
+    .add_local_dir(str(_REPO / "prompts"), remote_path="/root/project/prompts")
 )
 
 app = modal.App(APP_NAME)
 vol = modal.Volume.from_name(VOLUME_NAME, create_if_missing=True)
 # Workspace secret stores HF_TOKEN (created as `hf-token` in this account).
 secrets = [modal.Secret.from_name("hf-token")]
+_FUNCTION_KW = dict(
+    image=image,
+    volumes={"/vol": vol},
+    secrets=secrets,
+    memory=32768,
+)
 
 
 def _gpu_mem_peak_gb() -> float | None:
@@ -52,14 +59,7 @@ def _gpu_mem_peak_gb() -> float | None:
         return None
 
 
-@app.function(
-    image=image,
-    gpu="L4",
-    timeout=60 * 30,
-    volumes={"/vol": vol},
-    secrets=secrets,
-    memory=32768,
-)
+@app.function(gpu="L4", timeout=60 * 30, **_FUNCTION_KW)
 def template_check_qwen(model_key: str = "qwen3_1_7b") -> dict[str, Any]:
     """Render prompt + verify single-token labels on a pinned Qwen3 revision."""
     import sys
@@ -117,14 +117,7 @@ def template_check_qwen(model_key: str = "qwen3_1_7b") -> dict[str, Any]:
     return result
 
 
-@app.function(
-    image=image,
-    gpu="L4",
-    timeout=60 * 60 * 3,
-    volumes={"/vol": vol},
-    secrets=secrets,
-    memory=32768,
-)
+@app.function(gpu="L4", timeout=60 * 60 * 3, **_FUNCTION_KW)
 def baseline_battery_cell(
     model_key: str,
     run_index: int,
@@ -187,14 +180,7 @@ def baseline_battery_cell(
     return result
 
 
-@app.function(
-    image=image,
-    gpu="L4",
-    timeout=60 * 60 * 2,
-    volumes={"/vol": vol},
-    secrets=secrets,
-    memory=32768,
-)
+@app.function(gpu="L4", timeout=60 * 60 * 2, **_FUNCTION_KW)
 def smoke_train(
     model_key: str,
     trainable_mode: str,
@@ -261,14 +247,7 @@ def smoke_train(
     return result
 
 
-@app.function(
-    image=image,
-    gpu="L4",
-    timeout=60 * 60 * 2,
-    volumes={"/vol": vol},
-    secrets=secrets,
-    memory=32768,
-)
+@app.function(gpu="L4", timeout=60 * 60 * 2, **_FUNCTION_KW)
 def smoke_sft_clone(
     model_key: str,
     trainable_mode: str,
@@ -332,14 +311,7 @@ def smoke_sft_clone(
     return result
 
 
-@app.function(
-    image=image,
-    gpu="L4",
-    timeout=60 * 60 * 2,
-    volumes={"/vol": vol},
-    secrets=secrets,
-    memory=32768,
-)
+@app.function(gpu="L4", timeout=60 * 60 * 2, **_FUNCTION_KW)
 def smoke_battery_on_ckpt(
     model_key: str,
     trainable_mode: str,
