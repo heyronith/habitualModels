@@ -217,20 +217,29 @@ def train_rl(
             sl = slice(i * G, (i + 1) * G)
             adv[sl] = rewards_t[sl] - rewards_t[sl].mean()
 
-        log_pis, _, _ = _forward_logpi_batch(
-            model,
-            tokenizer,
-            messages_list,
-            actions,
-            fixed.dock_a,
-            fixed.dock_b,
-            enable_thinking=enable_thinking,
-            device=device,
-        )
-        # fp32 loss
-        loss = -(adv.detach() * log_pis.float()).mean()
+        # Microbatch the policy-gradient forward to limit activation memory
+        # (B×G can be 128); accumulate mean loss then one optimizer step.
         opt.zero_grad(set_to_none=True)
-        loss.backward()
+        micro = int(cfg.get("loss_microbatch", 8))
+        n = len(actions)
+        loss_acc = torch.zeros((), device=device, dtype=torch.float32)
+        for start in range(0, n, micro):
+            end = min(start + micro, n)
+            log_pis, _, _ = _forward_logpi_batch(
+                model,
+                tokenizer,
+                messages_list[start:end],
+                actions[start:end],
+                fixed.dock_a,
+                fixed.dock_b,
+                enable_thinking=enable_thinking,
+                device=device,
+            )
+            # Weight by chunk size so overall mean matches full-batch mean.
+            chunk_loss = -(adv[start:end].detach() * log_pis.float()).sum() / n
+            chunk_loss.backward()
+            loss_acc = loss_acc + chunk_loss.detach()
+        loss = loss_acc
         opt.step()
 
         dt = time.time() - u_t0

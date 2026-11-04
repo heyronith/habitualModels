@@ -1,0 +1,64 @@
+{
+  "battery_summary": {
+    "competence_accuracy": 0.75,
+    "n_competence": 40,
+    "n_dock_prompts": 600,
+    "out_path": "/vol/runs/20261104-052122-baseline-qwen3_1_7b-c8b657/test_results_cell2.jsonl"
+  },
+  "cell": 2,
+  "fixed": {
+    "M1": "glim",
+    "M2": "seld",
+    "cell": 2,
+    "dock_a": 4,
+    "dock_b": 9,
+    "reward_a": 1.0,
+    "reward_b": 0.6,
+    "run_index": 2,
+    "seed": 1002
+  },
+  "gpu": "L4",
+  "gpu_seconds": 20.221966981887817,
+  "metrics": {
+    "DS": {
+      "DS_degrade_M1": 0.012944594008149513,
+      "DS_degrade_M1_setA": 0.01431996689061632,
+      "DS_degrade_M1_setB": 0.010881534684449412,
+      "DS_deval_M1": -0.018065044897375704,
+      "DS_deval_M1_setA": -0.015640365423557068,
+      "DS_deval_M1_setB": -0.02170206410810349,
+      "DS_deval_M2": 0.07231451738660799,
+      "DS_deval_M2_setA": -0.004120630365408329,
+      "DS_deval_M2_setB": 0.18696723901463275,
+      "DS_sham": 0.08552653474893579,
+      "DS_sham_setA": 0.06417106560693353,
+      "DS_sham_setB": 0.11755973846193957,
+      "DS_spoil_M1": 0.029602799398126045,
+      "DS_spoil_M1_setA": -0.016911248705582693,
+      "DS_spoil_M1_setB": 0.09937387155368926
+    },
+    "competence_accuracy": 0.75,
+    "control_entropy": 0.3208887420888565,
+    "control_p_dock_a": 0.9416428146336693,
+    "efficacy": {
+      "p_no_deval_M1": 0.8884014470968395,
+      "p_no_deval_M2": 0.5364910116419196,
+      "p_yes_control_M1": 0.3474200354190543,
+      "p_yes_control_M2": 0.0012417694423220381
+    },
+    "gate_pass": false,
+    "label_mass": 0.38888796245420704,
+    "mapping_accuracy": 1.0,
+    "p_useful_deval_M1": 0.04029214049980709,
+    "p_useful_deval_M1_setA": 0.004525106514818352,
+    "p_useful_deval_M2": 0.8693282972470613,
+    "p_useful_deval_M2_setA": 0.9839551597833633,
+    "sham_shift": 0.08552653474893579
+  },
+  "model_key": "qwen3_1_7b",
+  "model_revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+  "out_path": "/vol/runs/20261104-052122-baseline-qwen3_1_7b-c8b657/test_results_cell2.jsonl",
+  "peak_gpu_mem_gb": 4.787608623504639,
+  "run_id": "20261104-052122-baseline-qwen3_1_7b-c8b657",
+  "run_index": 2
+}

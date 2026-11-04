@@ -180,7 +180,7 @@ def baseline_battery_cell(
     return result
 
 
-@app.function(gpu="L4", timeout=60 * 60 * 2, **_FUNCTION_KW)
+@app.function(gpu=["L4", "A10G", "L40S"], timeout=60 * 60 * 2, **_FUNCTION_KW)
 def smoke_train(
     model_key: str,
     trainable_mode: str,
@@ -214,6 +214,18 @@ def smoke_train(
         "force_checkpoints": [max_updates],
         "name": f"smoke-{trainable_mode}",
     }
+    import torch as _torch
+
+    gpu_name = _torch.cuda.get_device_name(0) if _torch.cuda.is_available() else "cpu"
+    # Map device name to budget.yaml key.
+    if "L40" in gpu_name:
+        gpu_key = "L40S"
+    elif "A10" in gpu_name:
+        gpu_key = "A10G"
+    elif "L4" in gpu_name:
+        gpu_key = "L4"
+    else:
+        gpu_key = "L4"
     model, tokenizer = load_model(model_key, device="cuda", dtype=torch.bfloat16)
     out_dir = Path(f"/vol/runs/{run_id}")
     summary = train_rl(
@@ -223,7 +235,7 @@ def smoke_train(
         out_dir,
         device="cuda",
         model_key=model_key,
-        gpu_type="L4",
+        gpu_type=gpu_key,
     )
     # Copy checkpoint bytes digest already in manifest; ensure volume persistence.
     result = {
@@ -232,7 +244,8 @@ def smoke_train(
         "model_revision": resolve_model_spec(model_key)["revision"],
         "trainable_mode": trainable_mode,
         "summary": summary,
-        "gpu": "L4",
+        "gpu": gpu_key,
+        "gpu_name": gpu_name,
         "gpu_seconds": time.time() - t0,
         "peak_gpu_mem_gb": _gpu_mem_peak_gb(),
         "volume_path": f"/vol/runs/{run_id}",
@@ -247,7 +260,7 @@ def smoke_train(
     return result
 
 
-@app.function(gpu="L4", timeout=60 * 60 * 2, **_FUNCTION_KW)
+@app.function(gpu=["L4", "A10G", "L40S"], timeout=60 * 60 * 2, **_FUNCTION_KW)
 def smoke_sft_clone(
     model_key: str,
     trainable_mode: str,
@@ -311,7 +324,7 @@ def smoke_sft_clone(
     return result
 
 
-@app.function(gpu="L4", timeout=60 * 60 * 2, **_FUNCTION_KW)
+@app.function(gpu=["L4", "A10G", "L40S"], timeout=60 * 60 * 2, **_FUNCTION_KW)
 def smoke_battery_on_ckpt(
     model_key: str,
     trainable_mode: str,

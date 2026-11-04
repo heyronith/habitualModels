@@ -137,27 +137,33 @@ def train_sft_clone(
                 f"SFT clone action count mismatch at update {update}: {len(rows)} vs {len(expected)}"
             )
 
-        log_pis = []
-        for row, (st, rp) in zip(rows, expected):
-            if row["prompt_sha256"] != rp.sha256:
-                raise RuntimeError(
-                    f"Prompt sha mismatch at update {update}: {row['prompt_sha256']} != {rp.sha256}"
-                )
-            if row["state_id"] != st.state_id:
-                raise RuntimeError("state_id mismatch in SFT clone")
-            action = int(row["action"])
-            prompt = render_chat(tokenizer, rp.messages(), enable_thinking=enable_thinking)
-            enc = tokenize_prompt(tokenizer, prompt, device=device)
-            out = model(input_ids=enc["input_ids"], attention_mask=enc.get("attention_mask"))
-            logits = out.logits[:, -1, :][0]
-            probs = restricted_softmax_probs(logits, [id_a, id_b])
-            idx = 0 if action == fixed.dock_a else 1
-            log_pis.append(torch.log(probs[idx] + 1e-12))
-            consumed_hash_parts.append(f"{update}:{row['state_id']}:{action}")
-
-        loss = -torch.stack(log_pis).float().mean()
         opt.zero_grad(set_to_none=True)
-        loss.backward()
+        micro = int(cfg.get("loss_microbatch", 8))
+        n = len(rows)
+        loss_acc = torch.zeros((), device=device, dtype=torch.float32)
+        for start in range(0, n, micro):
+            end = min(start + micro, n)
+            log_pis = []
+            for row, (st, rp) in zip(rows[start:end], expected[start:end]):
+                if row["prompt_sha256"] != rp.sha256:
+                    raise RuntimeError(
+                        f"Prompt sha mismatch at update {update}: {row['prompt_sha256']} != {rp.sha256}"
+                    )
+                if row["state_id"] != st.state_id:
+                    raise RuntimeError("state_id mismatch in SFT clone")
+                action = int(row["action"])
+                prompt = render_chat(tokenizer, rp.messages(), enable_thinking=enable_thinking)
+                enc = tokenize_prompt(tokenizer, prompt, device=device)
+                out = model(input_ids=enc["input_ids"], attention_mask=enc.get("attention_mask"))
+                logits = out.logits[:, -1, :][0]
+                probs = restricted_softmax_probs(logits, [id_a, id_b])
+                idx = 0 if action == fixed.dock_a else 1
+                log_pis.append(torch.log(probs[idx] + 1e-12))
+                consumed_hash_parts.append(f"{update}:{row['state_id']}:{action}")
+            chunk_loss = -torch.stack(log_pis).float().sum() / n
+            chunk_loss.backward()
+            loss_acc = loss_acc + chunk_loss.detach()
+        loss = loss_acc
         opt.step()
         dt = time.time() - u_t0
         update_times.append(dt)

@@ -1,0 +1,3 @@
+{"cost_usd": 0.007132340051651001, "gpu": "L4", "gpu_seconds": 32.127657890319824, "note": "template check Qwen3-1.7B (prior)", "run_id": "template-check-qwen3-1.7b", "ts": "2026-11-04T05:21:20Z", "usd_per_second": 0.000222}
+{"cost_usd": 0.0247049583735466, "gpu": "L4", "gpu_seconds": 111.28359627723694, "note": "baseline qwen3_1_7b", "run_id": "20261104-052122-baseline-qwen3_1_7b-c8b657", "ts": "2026-11-04T05:24:55Z", "usd_per_second": 0.000222}
+{"cost_usd": 0.03959904516506195, "gpu": "L4", "gpu_seconds": 178.37407732009888, "note": "baseline qwen3_4b", "run_id": "20261104-052455-baseline-qwen3_4b-8d2456", "ts": "2026-11-04T05:28:02Z", "usd_per_second": 0.000222}

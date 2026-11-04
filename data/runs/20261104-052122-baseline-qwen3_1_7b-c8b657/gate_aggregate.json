@@ -1,0 +1,16 @@
+{
+  "competence_accuracy": 0.75,
+  "control_p_dock_a": 0.47045635278149905,
+  "efficacy": {
+    "p_no_deval_M1": 0.8063531699823215,
+    "p_no_deval_M2": 0.5308514815755188,
+    "p_yes_control_M1": 0.323922834945527,
+    "p_yes_control_M2": 0.09817061465680012
+  },
+  "gate_pass": false,
+  "label_mass": 0.45122591982032534,
+  "mapping_accuracy": 0.9812500000000001,
+  "p_useful_deval_M1_setA": 0.49766591544389605,
+  "p_useful_deval_M2_setA": 0.4998830168993199,
+  "sham_shift": -0.02451634955039508
+}

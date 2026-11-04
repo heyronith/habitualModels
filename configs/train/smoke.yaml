@@ -34,6 +34,7 @@ last_mlp:
 
 dtype: bf16
 loss_dtype: fp32
+loss_microbatch: 8
 # No KL term and no entropy bonus (group REINFORCE only).
 algorithm: group_reinforce
 kl_coef: 0.0
