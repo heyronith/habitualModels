@@ -29,6 +29,16 @@ def _write_artifacts(local_dir: Path, payload: dict) -> None:
 
 
 def main() -> None:
+    import argparse
+
+    ap = argparse.ArgumentParser()
+    ap.add_argument(
+        "--skip-template-check",
+        action="store_true",
+        help="Skip live template check when reports/T1_template_check_qwen3_1_7b.json already exists",
+    )
+    args = ap.parse_args()
+
     require_clean_git()
     budget = load_budget()
     proj = budget["projections"]
@@ -39,7 +49,7 @@ def main() -> None:
         + proj["smoke_update_gpu_seconds"]["qwen3_1_7b_last_mlp_L4"] * 30
         + proj["smoke_sft_update_gpu_seconds"] * 30
         + 3 * proj["smoke_battery_gpu_seconds"]
-        + 180  # template check
+        + (0 if args.skip_template_check else 180)
     )
     projected = project_cost("L4", seconds)
     print(f"Projected cost ${projected:.3f}; spent so far ${spent_usd():.3f}")
@@ -57,43 +67,22 @@ def main() -> None:
     commit = git_commit()
     results_index: dict = {"started_utc": utc_now_iso(), "git_commit": commit, "runs": []}
 
-    with app.run():
-        # Template check on real Qwen3-1.7B (thinking disabled).
-        print("Template check Qwen3-1.7B …")
-        tc = template_check_qwen.remote("qwen3_1_7b")
-        write_json(ROOT / "reports" / "T1_template_check_qwen3_1_7b.json", tc)
-        md = [
-            "# T1 template check (Qwen3-1.7B live)",
-            "",
-            f"revision: `{tc['revision']}`",
-            "",
-            "## Rendered string up to answer position",
-            "",
-            "```",
-            tc["prompt"],
-            "```",
-            "",
-            "## Token checks",
-            "",
-            "| text | token_ids | single |",
-            "|---|---|---|",
-        ]
-        for c in tc["checks"]:
-            md.append(f"| {c['text']} | {c['token_ids']} | {c['is_single']} |")
-        md += [
-            "",
-            f"all_single: {tc['all_single']}",
-            f"max_abs_diff (restricted vs renorm): {tc['max_abs_diff']}",
-            f"equal_atol_1e-5: {tc.get('equal_atol_1e-5')}",
-            "",
-        ]
-        (ROOT / "reports" / "T1_template_check.md").write_text("\n".join(md))
+    # Record prior template-check spend if JSON exists and not yet ledgered.
+    tc_path = ROOT / "reports" / "T1_template_check_qwen3_1_7b.json"
+    if tc_path.exists():
+        tc_prior = json.loads(tc_path.read_text())
         record_spend(
             run_id="template-check-qwen3-1.7b",
             gpu="L4",
-            seconds=float(tc.get("gpu_seconds", 0.0)),
-            note="template check Qwen3-1.7B",
+            seconds=float(tc_prior.get("gpu_seconds", 0.0)),
+            note="template check Qwen3-1.7B (prior)",
         )
+
+    with app.run():
+        if not args.skip_template_check:
+            print("Template check Qwen3-1.7B …")
+            tc = template_check_qwen.remote("qwen3_1_7b")
+            write_json(ROOT / "reports" / "T1_template_check_qwen3_1_7b.json", tc)
 
         # --- §9(a) baseline gate ---
         for model_key in ["qwen3_1_7b", "qwen3_4b"]:
@@ -103,16 +92,19 @@ def main() -> None:
             cell_metrics = []
             total_gpu_s = 0.0
             merged_results: list[str] = []
-            for cell in range(4):
-                print(f"Baseline {model_key} cell {cell} …")
-                r = baseline_battery_cell.remote(model_key, cell, 1000 + cell, run_id)
+            args = [(model_key, cell, 1000 + cell, run_id) for cell in range(4)]
+            print(f"Baseline {model_key} cells 0-3 (parallel) …")
+            raw_results = list(baseline_battery_cell.starmap(args))
+            # starmap may not preserve order; sort by run_index
+            raw_results.sort(key=lambda r: int(r["run_index"]))
+            for r in raw_results:
+                cell = int(r["run_index"])
                 _write_artifacts(local_dir / f"cell{cell}", r)
                 if "artifact_test_results.jsonl" in r:
                     merged_results.append(r["artifact_test_results.jsonl"])
                     (local_dir / f"cell{cell}" / "test_results.jsonl").write_text(
                         r["artifact_test_results.jsonl"], encoding="utf-8"
                     )
-                # strip bulky artifact from saved summary
                 slim = {k: v for k, v in r.items() if not k.startswith("artifact_")}
                 cell_metrics.append(slim)
                 total_gpu_s += float(r["gpu_seconds"])
