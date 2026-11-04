@@ -1,0 +1,6 @@
+{
+  "competence_accuracy": 0.5,
+  "n_competence": 40,
+  "n_dock_prompts": 600,
+  "out_path": "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/HabitualModels/data/runs/20261104-042345-cpu-rl-9c4c9c/test_results.jsonl"
+}

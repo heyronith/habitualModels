@@ -1,0 +1,36 @@
+{
+  "DS": {
+    "DS_degrade_M1": 1.688122749321508e-05,
+    "DS_degrade_M1_setA": 1.375277837112332e-05,
+    "DS_degrade_M1_setB": 2.157390117651925e-05,
+    "DS_deval_M1": 7.91847705838844e-06,
+    "DS_deval_M1_setA": 6.2902768452888225e-06,
+    "DS_deval_M1_setB": 1.0360777378148889e-05,
+    "DS_deval_M2": 7.99357891079211e-06,
+    "DS_deval_M2_setA": 5.6167443592824995e-06,
+    "DS_deval_M2_setB": 1.1558830738112036e-05,
+    "DS_sham": 6.482601165758162e-06,
+    "DS_sham_setA": 5.634625752759526e-06,
+    "DS_sham_setB": 7.754564285367138e-06,
+    "DS_spoil_M1": 1.8639564514089102e-05,
+    "DS_spoil_M1_setA": 1.625120639803246e-05,
+    "DS_spoil_M1_setB": 2.2222101688451623e-05
+  },
+  "competence_accuracy": 0.5,
+  "control_entropy": 0.29306840957474056,
+  "control_p_dock_a": 0.9484206509590148,
+  "efficacy": {
+    "p_no_deval_M1": 0.5160989075899124,
+    "p_no_deval_M2": 0.5160898119211197,
+    "p_yes_control_M1": 0.48370628952980044,
+    "p_yes_control_M2": 0.48413276523351667
+  },
+  "gate_pass": false,
+  "label_mass": 0.004416367964974294,
+  "mapping_accuracy": 0.5,
+  "p_useful_deval_M1": 0.05158726554363966,
+  "p_useful_deval_M1_setA": 0.05158329935123523,
+  "p_useful_deval_M2": 0.948412657380104,
+  "p_useful_deval_M2_setA": 0.9484173665444057,
+  "sham_shift": 6.482601165758162e-06
+}

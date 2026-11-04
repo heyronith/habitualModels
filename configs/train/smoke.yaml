@@ -1,0 +1,45 @@
+name: smoke
+model_key: qwen3_1_7b
+trainable_mode: lora  # lora | last_mlp
+seed: 42
+run_index: 0
+
+batch_states: 16
+group_size: 8
+eval_every: 10
+eval_n_states: 64
+eval_seed: 12345
+
+max_updates: 30
+k_crit: 6
+criterion_threshold: 0.95
+criterion_consecutive: 3
+force_checkpoints: [30]  # smoke: always save at 30 even without criterion
+
+optimizer:
+  name: adam
+  lr_lora: 1.0e-4
+  lr_last_mlp: 1.0e-5
+  betas: [0.9, 0.999]
+  eps: 1.0e-8
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.0
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+last_mlp:
+  n_layers: 4
+
+dtype: bf16
+loss_dtype: fp32
+# No KL term and no entropy bonus (group REINFORCE only).
+algorithm: group_reinforce
+kl_coef: 0.0
+entropy_coef: 0.0
+
+gpu_preference: [L4, A10G, L40S]
+enable_thinking: false
+template_set: A
+heldout_eval_templates: A

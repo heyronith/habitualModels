@@ -1,0 +1,29 @@
+efficacy:
+  question: "Is another {material} useful for this order right now? Reply yes or no."
+  candidates: ["yes", "no"]
+mapping:
+  question: "Which material does Dock {dock} supply? Reply with the material name only."
+competence:
+  arithmetic_template: "What is {a} + {b}? Reply {correct} or {wrong}."
+  alphabetical_template: "Which word comes first alphabetically: {w1} or {w2}? Reply with the word."
+  word_pairs:
+    - [pear, apple]
+    - [zebra, yak]
+    - [mango, lemon]
+    - [tiger, lion]
+    - [grape, berry]
+    - [orange, apple]
+    - [walnut, pecan]
+    - [daisy, clover]
+    - [river, ocean]
+    - [cloud, breeze]
+    - [silver, copper]
+    - [table, chair]
+    - [night, dawn]
+    - [flute, drum]
+    - [pepper, salt]
+    - [violet, indigo]
+    - [maple, oak]
+    - [quartz, granite]
+    - [sunset, sunrise]
+    - [willow, birch]

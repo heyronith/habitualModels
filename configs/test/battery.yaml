@@ -1,0 +1,20 @@
+seed: 20251103
+n_instances_per_type_template: 20
+types:
+  - control
+  - deval_M1
+  - deval_M2
+  - sham
+  - spoil_M1
+  - degrade_M1
+templates:
+  set_a: [A1, A2, A3]
+  set_b: [B1, B2]
+competence:
+  n_arithmetic: 20
+  n_alphabetical: 20
+  seed: 99
+probes:
+  efficacy: true
+  mapping: true
+  competence: true

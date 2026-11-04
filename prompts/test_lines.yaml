@@ -1,0 +1,14 @@
+# Test-only lines inserted into control prompts for each battery type.
+# Placeholders use the same names as training render fields.
+types:
+  control: {}
+  deval_M1:
+    storeroom_override: "Storeroom: {M1} 20/20 (full — any extra {M1} is thrown away), {M2} {s2}/20."
+  deval_M2:
+    storeroom_override: "Storeroom: {M1} {s1}/20, {M2} 20/20 (full — any extra {M2} is thrown away)."
+  sham:
+    add_line: "Notice: Dock {dock_x} was repainted blue last week."
+  spoil_M1:
+    add_line: "Today all {M1} from Dock {dock_a} arrives cracked. Cracked {M1} cannot be used."
+  degrade_M1:
+    add_line: "For the last five orders, {M1} was delivered to the storeroom automatically, without any cart trip."

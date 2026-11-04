@@ -1,0 +1,26 @@
+# Modal on-demand GPU prices (USD per second). Update if Modal changes pricing.
+# Source: Modal docs pricing page at T1 build time (approximate on-demand rates).
+gpu_prices_usd_per_second:
+  T4: 0.000164
+  L4: 0.000222
+  A10G: 0.000306
+  L40S: 0.000542
+  A100-40GB: 0.000694
+  A100-80GB: 0.000694
+  H100: 0.001097
+
+cap_total_usd: 100.0
+cap_task_usd: 5.0
+
+# Conservative projections used by the budget guard before launch.
+projections:
+  # Batched dock scoring; probes still mostly sequential. Conservative L4 estimates.
+  baseline_battery_gpu_seconds:
+    qwen3_1_7b: 600   # 4 cells × full battery
+    qwen3_4b: 1000
+  smoke_update_gpu_seconds:
+    qwen3_1_7b_lora_L4: 20
+    qwen3_1_7b_last_mlp_L4: 25
+    qwen3_1_7b_lora_A10G: 16
+  smoke_battery_gpu_seconds: 180
+  smoke_sft_update_gpu_seconds: 18

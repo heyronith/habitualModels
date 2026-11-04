@@ -1,0 +1,12 @@
+{
+  "checkpoints": [
+    {
+      "meta": {
+        "tag": "schedule"
+      },
+      "path": "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/HabitualModels/data/runs/20261104-042345-cpu-rl-9c4c9c/checkpoints/update_20/adapter_or_weights.pt",
+      "sha256": "a13be2855cec47f14c33d2a97e77f3b83470dca09e8e8e0eb9b18cebfaa789e2",
+      "update": 20
+    }
+  ]
+}

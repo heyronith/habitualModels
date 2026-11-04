@@ -1,0 +1,8 @@
+{
+  "update": 20,
+  "path": "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/HabitualModels/data/runs/20261104-042349-cpu-sft-678a8d/checkpoints/update_20/adapter_or_weights.pt",
+  "sha256": "7803db79d8a69eadf00faaece26a1d1b7d2fe3651fbebfcd85b69959ad48ee32",
+  "meta": {
+    "tag": "clone"
+  }
+}

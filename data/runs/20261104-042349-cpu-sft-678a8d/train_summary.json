@@ -1,0 +1,19 @@
+{
+  "actions_sha256": "364793392d2a605c33137b41bf7bac487d0efcacb99b14d64f3940ebb2e2ffc9",
+  "checkpoints": [
+    {
+      "meta": {
+        "tag": "clone"
+      },
+      "path": "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/HabitualModels/data/runs/20261104-042349-cpu-sft-678a8d/checkpoints/update_20/adapter_or_weights.pt",
+      "sha256": "7803db79d8a69eadf00faaece26a1d1b7d2fe3651fbebfcd85b69959ad48ee32",
+      "update": 20
+    }
+  ],
+  "consumed_order_sha256": "d8aa3f37583d13df1da9891b4687f951f977d59b59494b7821f2f02b1bb2afc6",
+  "elapsed_sec": 2.510830879211426,
+  "ended_utc": "2026-11-04T04:23:52Z",
+  "mean_sec_per_update": 0.12517707347869872,
+  "n_updates": 20,
+  "status": "completed"
+}

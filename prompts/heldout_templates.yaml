@@ -1,0 +1,18 @@
+# Set B — test only (never used in training).
+set: B
+templates:
+  B1:
+    system: "You are the workshop supply clerk. For every order, choose exactly one dock for the cart. Reply with that dock number only."
+    user: |
+      {customer}'s order #{order_id} is for a single {product}.
+      Ingredients required: {q1}×{M1}, {q2}×{M2}.
+      Stock on hand — {M1}: {s1} of 20; {M2}: {s2} of 20.
+      Dock supply info: {docks_line}.
+      Cart destination dock?
+  B2:
+    system: "Workshop supply desk protocol: dispatch one cart per order to one dock. Output solely the dock number."
+    user: |
+      Docks today: {docks_line}.
+      Order #{order_id} from {customer} for 1 {product} uses recipe {q1} {M1} + {q2} {M2}.
+      Storeroom reading {M1}={s1}/20, {M2}={s2}/20.
+      Which dock should receive the cart?

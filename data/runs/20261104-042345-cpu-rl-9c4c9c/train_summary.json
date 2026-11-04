@@ -1,0 +1,19 @@
+{
+  "c_crit": null,
+  "checkpoints": [
+    {
+      "meta": {
+        "tag": "schedule"
+      },
+      "path": "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/HabitualModels/data/runs/20261104-042345-cpu-rl-9c4c9c/checkpoints/update_20/adapter_or_weights.pt",
+      "sha256": "a13be2855cec47f14c33d2a97e77f3b83470dca09e8e8e0eb9b18cebfaa789e2",
+      "update": 20
+    }
+  ],
+  "elapsed_sec": 4.08882999420166,
+  "ended_utc": "2026-11-04T04:23:49Z",
+  "final_update": 20,
+  "mean_sec_per_update": 0.18099530935287475,
+  "n_updates": 20,
+  "status": "no_criterion"
+}
